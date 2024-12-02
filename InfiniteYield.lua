@@ -1,4 +1,4 @@
--- Infinite Yield FE Admin
+-- Infinite Yield FE Admin by EdgeIY
 -- View the owner profile here: github.com/EdgeIY
 -- view the official string here: raw.githubusercontent.com/EdgeIY/infiniteyield/master/source
 
@@ -10,7 +10,7 @@ end
 pcall(function() getgenv().IY_LOADED = true end)
 
 local cloneref = cloneref or function(o) return o end
-Players = cloneref(game:GetService("Players"))
+Players = game:GetService("Players")
 COREGUI = Players.LocalPlayer.PlayerGui
 
 if not game:IsLoaded() then
