@@ -1934,19 +1934,24 @@ MaterialService = game:GetService("MaterialService")
 AvatarEditorService = game:GetService("AvatarEditorService")
 TextChatService = game:GetService("TextChatService")
 
-sethidden = sethiddenproperty or set_hidden_property or set_hidden_prop
-gethidden = gethiddenproperty or get_hidden_property or get_hidden_prop
-queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
-httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+sethidden = false
+gethidden = false
+queueteleport = false
+httprequest = false
 PlaceId, JobId = game.PlaceId, game.JobId
-local IsOnMobile = table.find({Enum.Platform.IOS, Enum.Platform.Android}, UserInputService:GetPlatform())
-everyClipboard = setclipboard or toclipboard or set_clipboard or (Clipboard and Clipboard.set)
+local IsOnMobile = UserInputService.TouchEnabled
+everyClipboard = false
 isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
+
+
+local writefile = nil
 
 local writefile = type(writefile) == "function" and function(file, data, safe)
 	if safe == true then return pcall(writefile, file, data) end
 	writefile(file, data)
 end
+
+local readfile = nil
 
 local readfile = type(readfile) == "function" and function(file, safe)
 	if safe == true then return pcall(readfile, file) end
@@ -2935,6 +2940,7 @@ function saves()
 			if out ~= nil and tostring(out):gsub("%s", "") ~= "" then
 				local success, response = pcall(function()
 					local json = HttpService:JSONDecode(out)
+					local spawnCmds
 					if json.prefix ~= nil then prefix = json.prefix else prefix = ';' end
 					if json.StayOpen ~= nil then StayOpen = json.StayOpen else StayOpen = false end
 					if json.keepIY ~= nil then KeepInfYield = json.keepIY else KeepInfYield = true end
@@ -5191,7 +5197,7 @@ SpecialPlayerCases = {
 	["age(%d+)"] = function(speaker,args)
 		local returns = {}
 		local age = tonumber(args[1])
-		if not age == nil then return end
+		if age ~= nil then return end
 		for _,plr in pairs(Players:GetPlayers()) do
 			if plr.AccountAge <= age then
 				table.insert(returns,plr)
@@ -6173,11 +6179,11 @@ local PluginCache
 function LoadPlugin(val,startup)
 	local plugin
 
-	function CatchedPluginLoad()
+	local function CatchedPluginLoad()
 		plugin = loadfile(val)()
 	end
 
-	function handlePluginError(plerror)
+	local function handlePluginError(plerror)
 		notify('Plugin Error','An error occurred with the plugin, "'..val..'" and it could not be loaded')
 		if FindInTable(PluginsTable,val) then
 			for i,v in pairs(PluginsTable) do
