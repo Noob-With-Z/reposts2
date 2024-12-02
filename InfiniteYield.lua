@@ -1,4 +1,4 @@
--- Infinite Yield FE Admin by EdgeIY
+-- Infinite Yield FE Admin
 -- View the owner profile here: github.com/EdgeIY
 -- view the official string here: raw.githubusercontent.com/EdgeIY/infiniteyield/master/source
 
