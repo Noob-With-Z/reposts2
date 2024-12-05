@@ -18,16 +18,7 @@ if not game:IsLoaded() then
 end
 
 Players = game:GetService("Players")
-
-local plr
-
-for i, v in pairs(game:GetService("Players"):GetDescendants()) do
-if v:IsA("PlayerGui") then
-plr = v.Parent
-end
-end
-
-COREGUI = plr.PlayerGui
+COREGUI = Players.LocalPlayer.PlayerGui
 
 currentVersion = "6.1"
 
@@ -12374,3 +12365,10 @@ task.spawn(function()
 	minimizeHolder()
 	if IsOnMobile then notify("Unstable Device", "On mobile, Infinite Yield may have issues or features that are not functioning correctly.") end
 end)
+
+print([[
+-- Infinite Yield FE Admin Loaded
+-- View the owner profile here: github.com/EdgeIY
+-- view the official string here: raw.githubusercontent.com/EdgeIY/infiniteyield/master/source
+]])
+print("Current Version: "..currentVersion)
