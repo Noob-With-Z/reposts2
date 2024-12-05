@@ -18,7 +18,15 @@ if not game:IsLoaded() then
 end
 
 Players = game:GetService("Players")
-COREGUI = Players.LocalPlayer.PlayerGui
+
+local plr
+for i, v in pairs(Players:GetDescendants()) do
+if v:IsA("PlayerGui") then
+plr = v.Parent
+end
+end
+
+COREGUI = plr.PlayerGui
 
 currentVersion = "6.1"
 
