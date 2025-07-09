@@ -10296,8 +10296,8 @@ addcmd('oldconsole',{},function(args, speaker)
 end)
 
 addcmd("explorer", {"dex"}, function(args, speaker)
-    notify("Loading", "Hold on a sec")
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/Noob-With-Z/reposts2/refs/heads/main/DexExplorerMobile.lua"))()
+    notify("Loading", "Hold on a sec. (Mobile Adapted)")
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Noob-With-Z/reposts2/refs/heads/main/DexExplorerMobile.lua"))()
 end)
 
 addcmd('olddex', {'odex'}, function(args, speaker)
