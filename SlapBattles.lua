@@ -113,7 +113,7 @@ local OrionLib = loadstring(game:HttpGet(("https://raw.githubusercontent.com/Gia
 local GameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 
 local Players = cloneref(game:GetService("Players"))
-local plr = plr
+local plr = Players.LocalPlayer
 local char = plr.Character or plr.CharacterAdded:Wait()
 
 game:GetService("GuiService"):ClearError()
