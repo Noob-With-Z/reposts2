@@ -31,7 +31,6 @@ Legend:
 
 cloneref = nil
 sethiddenproperty, set_hidden_property, set_hidden_prop = nil
-gethiddenproperty, get_hidden_property, get_hidden_prop = nil
 queue_on_teleport, syn, fluxus = nil
 request, http_request, http = nil
 setclipboard, toclipboard, set_clipboard, Clipboard = nil
