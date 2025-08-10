@@ -4,6 +4,8 @@
 --[[
 I made a small remake and recoded some parts of the code.
 
+(I keep trying to do smth and change it all i can)
+
 Changelog:
 
 Legend:
@@ -19,18 +21,20 @@ Legend:
 
 [/] Misc Tab Cleanup:
  |_ [-] Removed: Visual Slap Changer, Teleport To Game ID, Slap Battles Button (considered unnecessary).
+ |_ [-] Removed Farms: Replica, Baller, Blink (Patched).
+ |_ [-] Removed: Replica clone + Reverse effect (Patched).
  |_ [/] Improved Glove Equip System:
-     |_ [-] Removed support for Tournaments (patched).
+     |_ [-] Removed support for Tournaments (Patched).
      |_ [/] Enhanced glove name recognition:
          |_ Now supports lower/uppercase and spacing variations.
          |_ e.g.: "zahando", "ZaHando", "za hando", "Za Hando", "zAhAnDo", etc.
 ]]
-
 --[[
 -- // Temporary For Studio \\ --
 
 cloneref = nil
 sethiddenproperty, set_hidden_property, set_hidden_prop = nil
+gethiddenproperty, get_hidden_property, get_hidden_prop = nil
 queue_on_teleport, syn, fluxus = nil
 request, http_request, http = nil
 setclipboard, toclipboard, set_clipboard, Clipboard = nil
@@ -72,6 +76,7 @@ end
 
 -- // lol \\ --
 ]]
+
 if not game:IsLoaded() then
 	game.Loaded:Wait()
 end
@@ -173,8 +178,12 @@ function GetSpecificSettings(SettName)
 	end
 	
 	if CanReadFile() then
-		local sett = game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
-		return sett[SettName]
+		if SettName == "GetAll" then
+			return game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
+		else
+			local sett = game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
+			return sett[SettName]
+		end
 	end
 end
 
@@ -187,13 +196,14 @@ plr.OnTeleport:Connect(function(State)
 		if GetSpecificSettings() and GetSpecificSettings("AutoExecuteOnTeleport") == true then
 			local GameIsLoaded
 			repeat task.wait() until game:IsLoaded()
+			warn('[NoobZ Debug]: Player Teleported.')
 			GameIsLoaded = true
 			repeat task.wait() until GameIsLoaded
 			task.wait(.25)
 			
-			if GameIsLoaded and game:IsLoaded() then
-				loadstring(game:HttpGet('raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
-			end
+			loadstring(game:HttpGet('raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
+			warn('[NoobZ Debug]: Loading...')
+			warn('[NoobZ Debug]: Settings Loaded: {\n'..tostring(GetSpecificSettings("GetAll"))..'\n}')
 		end
 		]])
 	end
@@ -261,771 +271,112 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		SlapChanged.Value = ""
 	end
 
-	function SpamBaller()
-		if GetEquippedGlove() == "Baller" and char:FindFirstChild("entered") then
-			while getgenv().BallerFarm do
-				game:GetService("ReplicatedStorage").GeneralAbility:FireServer()
-				wait(30.05)
-			end
-		end
-	end
-
-	function SpamReplica()
-		if GetEquippedGlove() == "Replica" and char.IsInDefaultArena.Value == true then
-			while ReplicaFarm do
-				game:GetService("ReplicatedStorage").Duplicate:FireServer(true)
-				wait(20)
-			end
-		end
-	end
-
-	function SpamBlink()
-		if GetEquippedGlove() == "Blink" and char:FindFirstChild("entered") then
-			while BlinkFarm do
-				game:GetService("ReplicatedStorage").Blink:FireServer("OutOfBody", {["dir"] = Vector3.new(0, 0, 0),["ismoving"] = false,["mousebehavior"] = Enum.MouseBehavior.Default})
-				task.wait(50.05)
-			end
-		end
-	end
-
-	function SpamReplicaBaller()
-		if getgenv().GetTeleport == "Up To You" then
-			OGL = char.HumanoidRootPart.CFrame
-		end
-		while ReplicaBallerFarm do
-			repeat task.wait() until char
-			if char:FindFirstChild("entered") == nil and char:FindFirstChild("HumanoidRootPart") then
-				repeat task.wait()
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 0)
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 1)
-				until char:FindFirstChild("entered")
-			end
-			wait(0.25)
-			game:GetService("ReplicatedStorage").GeneralAbility:FireServer()
-			task.wait(0.09)
-			game.ReplicatedStorage.HumanoidDied:FireServer(char,false)
-			wait(3.75)
-			fireclickdetector(workspace.Lobby.Replica.ClickDetector)
-			wait(0.25)
-			repeat task.wait() until char
-			if char:FindFirstChild("entered") == nil and char:FindFirstChild("HumanoidRootPart") then
-				repeat task.wait()
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 0)
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 1)
-				until char:FindFirstChild("entered")
-			end
-			wait(0.25)
-			if getgenv().GetTeleport == "Up To You" then
-				char.HumanoidRootPart.CFrame = OGL
-			elseif getgenv().GetTeleport == "SafeSpotBox 1.0" then
-				char.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0,5,0)
-			elseif getgenv().GetTeleport == "SafeSpotBox 2.0" then
-				char.HumanoidRootPart.CFrame = workspace["Safespot"].CFrame * CFrame.new(0,10,0)
-			end
-			wait(0.5)
-			game:GetService("ReplicatedStorage").Duplicate:FireServer()
-			wait(20)
-			game.ReplicatedStorage.HumanoidDied:FireServer(char,false)
-			wait(3.75)
-			fireclickdetector(workspace.Lobby.Baller.ClickDetector)
-		end
-	end
-
-	function SpamReplicaBlinkReverseAndBaller()
-		if getgenv().GetTeleport == "Up To You" then
-			OGL = char.HumanoidRootPart.CFrame
-		end
-		while getgenv().ReplicaBlinkReverseBaller do
-			if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-				game:GetService("ReplicatedStorage"):WaitForChild("ReverseAbility"):FireServer()
-				wait()
-				fireclickdetector(workspace.Lobby.Blink.ClickDetector)
-				wait(0.05)
-				if getgenv().GetTeleport == "Up To You" then
-					char.HumanoidRootPart.CFrame = OGL
-				elseif getgenv().GetTeleport == "SafeSpotBox 1.0" then
-					char.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0,5,0)
-				elseif getgenv().GetTeleport == "SafeSpotBox 2.0" then
-					char.HumanoidRootPart.CFrame = workspace["Safespot"].CFrame * CFrame.new(0,10,0)
-				end
-				wait(0.08)
-				game:GetService("ReplicatedStorage").Blink:FireServer("OutOfBody", {["dir"] = Vector3.new(0, 0, 0),["ismoving"] = false,["mousebehavior"] = Enum.MouseBehavior.Default})
-				wait(0.05)
-				fireclickdetector(workspace.Lobby.Baller.ClickDetector)
-				game:GetService("ReplicatedStorage").GeneralAbility:FireServer()
-				task.wait(0.09)
-				game:GetService("ReplicatedStorage"):WaitForChild("HumanoidDied"):FireServer(char,false)
-				wait(3.75)
-				fireclickdetector(workspace.Lobby.Reverse.ClickDetector)
-				wait(2.5)
-				game:GetService("ReplicatedStorage"):WaitForChild("ReverseAbility"):FireServer()
-				wait(0.1)
-				fireclickdetector(workspace.Lobby.Replica.ClickDetector)
-				wait(0.1)
-				repeat task.wait() until char
-				if char:FindFirstChild("entered") == nil and char:FindFirstChild("HumanoidRootPart") then
-					repeat task.wait()
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 0)
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 1)
-					until char:FindFirstChild("entered")
-				end
-				wait(0.04)
-				if getgenv().GetTeleport == "Up To You" then
-					char.HumanoidRootPart.CFrame = OGL
-				elseif getgenv().GetTeleport == "SafeSpotBox 1.0" then
-					char.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0,5,0)
-				elseif getgenv().GetTeleport == "SafeSpotBox 2.0" then
-					char.HumanoidRootPart.CFrame = workspace["Safespot"].CFrame * CFrame.new(0,10,0)
-				end
-				wait(0.3)
-				game:GetService("ReplicatedStorage").Duplicate:FireServer()
-				wait(20)
-				if char.Humanoid.Health ~= 0 then
-					game:GetService("ReplicatedStorage"):WaitForChild("HumanoidDied"):FireServer(char,false)
-				end
-				wait(3.75)
-				fireclickdetector(workspace.Lobby.Reverse.ClickDetector)
-				wait(0.8)
-			end
-		end
-	end
-
-	function SpamReplicaReverse()
-		if getgenv().GetTeleport == "Up To You" then
-			OGL = char.HumanoidRootPart.CFrame
-		end
-		while ReplicaAndReverseGet do
-			if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-				game:GetService("ReplicatedStorage"):WaitForChild("ReverseAbility"):FireServer()
-				wait()
-				fireclickdetector(workspace.Lobby.Replica.ClickDetector)
-				wait(0.01)
-				repeat task.wait() until char
-				if not char:FindFirstChild("entered") and char:FindFirstChild("HumanoidRootPart") then
-					repeat task.wait()
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 0)
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 1)
-					until char:FindFirstChild("entered")
-				end
-				wait(0.04)
-				if getgenv().GetTeleport == "Up To You" then
-					char.HumanoidRootPart.CFrame = OGL
-				elseif getgenv().GetTeleport == "SafeSpotBox 1.0" then
-					char.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0,5,0)
-				elseif getgenv().GetTeleport == "SafeSpotBox 2.0" then
-					char.HumanoidRootPart.CFrame = workspace["Safespot"].CFrame * CFrame.new(0,10,0)
-				end
-				wait(0.1)
-				game:GetService("ReplicatedStorage").Duplicate:FireServer()
-				wait(20)
-				if char.Humanoid.Health ~= 0 then
-					game:GetService("ReplicatedStorage"):WaitForChild("HumanoidDied"):FireServer(char,false)
-				end
-				wait(3.75)
-				fireclickdetector(workspace.Lobby.Reverse.ClickDetector)
-				wait(0.8)
-			end
-		end
-	end
-
-	function SpamBlinkReverse()
-		if getgenv().GetTeleport == "Up To You" then
-			OGL = char.HumanoidRootPart.CFrame
-		end
-		while getgenv().BlinkAndReverseGet do
-			if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-				game:GetService("ReplicatedStorage"):WaitForChild("ReverseAbility"):FireServer()
-				wait()
-				fireclickdetector(workspace.Lobby.Blink.ClickDetector)
-				wait(0.01)
-				repeat task.wait() until char
-				if not char:FindFirstChild("entered") and char:FindFirstChild("HumanoidRootPart") then
-					repeat task.wait()
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 0)
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 1)
-					until char:FindFirstChild("entered")
-				end
-				wait(0.04)
-				if getgenv().GetTeleport == "Up To You" then
-					char.HumanoidRootPart.CFrame = OGL
-				elseif getgenv().GetTeleport == "SafeSpotBox 1.0" then
-					char.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0,5,0)
-				elseif getgenv().GetTeleport == "SafeSpotBox 2.0" then
-					char.HumanoidRootPart.CFrame = workspace["Safespot"].CFrame * CFrame.new(0,10,0)
-				end
-				wait(0.1)
-				game:GetService("ReplicatedStorage").Blink:FireServer("OutOfBody", {["dir"] = Vector3.new(0, 0, 0),["ismoving"] = false,["mousebehavior"] = Enum.MouseBehavior.Default})
-				wait(50.05)
-				if char.Humanoid.Health ~= 0 then
-					game:GetService("ReplicatedStorage"):WaitForChild("HumanoidDied"):FireServer(char,false)
-				end
-				wait(3.75)
-				fireclickdetector(workspace.Lobby.Reverse.ClickDetector)
-				wait(0.8)
-			end
-		end
-	end
-
-	function SpamReplicaBallerBlink()
-		if getgenv().GetTeleport == "Up To You" then
-			OGL = char.HumanoidRootPart.CFrame
-		end
-		while ReplicaBallerBlinkFarm do
-			char.HumanoidRootPart.CFrame = OGL
-			wait(0.25)
-			game:GetService("ReplicatedStorage").Blink:FireServer("OutOfBody", {["dir"] = Vector3.new(0, 0, 0),["ismoving"] = false,["mousebehavior"] = Enum.MouseBehavior.Default})
-			fireclickdetector(workspace.Lobby.Baller.ClickDetector)
-			wait(0.25)
-			repeat task.wait() until char
-			if char:FindFirstChild("entered") == nil and char:FindFirstChild("HumanoidRootPart") then
-				repeat task.wait()
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 0)
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 1)
-				until char:FindFirstChild("entered")
-			end
-			wait(0.25)
-			if getgenv().GetTeleport == "Up To You" then
-				char.HumanoidRootPart.CFrame = OGL
-			elseif getgenv().GetTeleport == "SafeSpotBox 1.0" then
-				char.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0,5,0)
-			elseif getgenv().GetTeleport == "SafeSpotBox 2.0" then
-				char.HumanoidRootPart.CFrame = workspace["Safespot"].CFrame * CFrame.new(0,10,0)
-			end
-			wait(0.25)
-			game:GetService("ReplicatedStorage").GeneralAbility:FireServer()
-			task.wait(0.09)
-			game.ReplicatedStorage.HumanoidDied:FireServer(char,false)
-			wait(3.75)
-			fireclickdetector(workspace.Lobby.Replica.ClickDetector)
-			wait(0.5)
-			repeat task.wait() until char
-			if char:FindFirstChild("entered") == nil and char:FindFirstChild("HumanoidRootPart") then
-				repeat task.wait()
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 0)
-					firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport2.TouchInterest.Parent, 1)
-				until char:FindFirstChild("entered")
-			end
-			wait(0.25)
-			char.HumanoidRootPart.CFrame = OGL
-			game:GetService("ReplicatedStorage").Duplicate:FireServer()
-			wait(20)
-			game.ReplicatedStorage.HumanoidDied:FireServer(char,false)
-			wait(3.75)
-			fireclickdetector(workspace.Lobby.Blink.ClickDetector)
-		end
-	end
-
-	---SafeSpotBox---
-
-	if workspace:FindFirstChild("SafeBox") == nil then
-		local S = Instance.new("Part")
-		S.Name = "SafeBox"
-		S.Anchored = true
-		S.CanCollide = true
-		S.Transparency = .5
-		S.Position = Vector3.new(-5500, -5000, -5000)
-		S.Size = Vector3.new(21, 5, 21)
-		S.Parent = workspace
-
-		local S1 = Instance.new("Part")
-		S1.Name = "S1"
-		S1.Anchored = true
-		S1.CanCollide = true
-		S1.Transparency = .5
-		S1.Position = Vector3.new(-5499.91, -4991.5, -4989.09)
-		S1.Size = Vector3.new(20, 13, 2)
-		S1.Parent = workspace:FindFirstChild("SafeBox")
-
-		local S2 = Instance.new("Part")
-		S2.Name = "S2"
-		S2.Anchored = true
-		S2.CanCollide = true
-		S2.Transparency = .5
-		S2.Position = Vector3.new(-5510.27979, -4991.5, -5000.08984, -4.47034836e-07, 0, 0.999999881, 0, 1, 0, -0.999999881, 0, -3.69319451e-07)
-		S2.Size = Vector3.new(21, 14, 2)
-		S2.Rotation = Vector3.new(0, -90, 0)
-		S2.Parent = workspace:FindFirstChild("SafeBox")
-
-		local S3 = Instance.new("Part")
-		S3.Name = "S3"
-		S3.Anchored = true
-		S3.CanCollide = true
-		S3.Transparency = .5
-		S3.Position = Vector3.new(-5499.3, -4991.5, -5011.12)
-		S3.Size = Vector3.new(21, 13, 2)
-		S3.Parent = workspace:FindFirstChild("SafeBox")
-
-		local S4 = Instance.new("Part")
-		S4.Name = "S4"
-		S4.Anchored = true
-		S4.CanCollide = true
-		S4.Transparency = .5
-		S4.Position = Vector3.new(-5489.97559, -4991.5, -4999.52637, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08)
-		S4.Size = Vector3.new(22, 13, 2)
-		S4.Rotation = Vector3.new(0, -90, 0)
-		S4.Parent = workspace:FindFirstChild("SafeBox")
-
-		local S5 = Instance.new("Part")
-		S5.Name = "S5"
-		S5.Anchored = true
-		S5.CanCollide = true
-		S5.Transparency = .5
-		S5.Position = Vector3.new(-5499.39, -4984, -5000.07)
-		S5.Size = Vector3.new(24, 3, 24)
-		S5.Parent = workspace:FindFirstChild("SafeBox")
-	end
-
-	---Bed---
-
-	if workspace:FindFirstChild("Bed") == nil then
-		local Bed = Instance.new("Part")
-		Bed.Name = "Bed"
-		Bed.Anchored = true
-		Bed.Position = Vector3.new(-100019.5, 104, -1500)
-		Bed.Size = Vector3.new(0.01, 0.01, 10)
-		Bed.Parent = workspace
-
-		local B1 = Instance.new("Part")
-		B1.Name = "Bed1"
-		B1.Anchored = true
-		B1.Position = Vector3.new(-100025, 104, -1500)
-		B1.Size = Vector3.new(1, 6, 7)
-		B1.BrickColor = BrickColor.new("Burnt Sienna")
-		B1.Parent = workspace:FindFirstChild("Bed")
-
-		local B2 = Instance.new("Part")
-		B2.Name = "Bed2"
-		B2.Anchored = true
-		B2.Position = Vector3.new(-100023, 104.5, -1500)
-		B2.Size = Vector3.new(2, 1, 6)
-		B2.BrickColor = BrickColor.new("Mid gray")
-		B2.Parent = workspace:FindFirstChild("Bed")
-
-		local B3 = Instance.new("Part")
-		B3.Name = "Bed3"
-		B3.Anchored = true
-		B3.Position = Vector3.new(-100019, 104, -1500)
-		B3.Size = Vector3.new(11, 1, 7)
-		B3.BrickColor = BrickColor.new("Crimson")
-		B3.Parent = workspace:FindFirstChild("Bed")
-
-		local B4 = Instance.new("Part")
-		B4.Name = "Bed4"
-		B4.Anchored = true
-		B4.Position = Vector3.new(-100013, 104, -1500)
-		B4.Size = Vector3.new(1, 6, 7)
-		B4.BrickColor = BrickColor.new("Burnt Sienna")
-		B4.Parent = workspace:FindFirstChild("Bed")
-
-		local B5 = Instance.new("Part")
-		B5.Name = "Bed5"
-		B5.Anchored = true
-		B5.Position = Vector3.new(-100019, 103, -1500)
-		B5.Size = Vector3.new(11, 1, 7)
-		B5.BrickColor = BrickColor.new("Dark orange")
-		B5.Parent = workspace:FindFirstChild("Bed")
-	end
-
-	---SafeSpot---
-
-	if workspace:FindFirstChild("Safespot") == nil then
-		local Safespot = Instance.new("Part",workspace)
-		Safespot.Name = "Safespot"
-		Safespot.Position = Vector3.new(10000,-50,10000)
-		Safespot.Size = Vector3.new(500,10,500)
-		Safespot.Anchored = true
-		Safespot.CanCollide = true
-		Safespot.Transparency = .5
-
-		local Safespot1 = Instance.new("Part",workspace)
-		Safespot1.Name = "DefendPart"
-		Safespot1.Position = Vector3.new(10000.2, 13, 9752.45)
-		Safespot1.Size = Vector3.new(500, 117, 5)
-		Safespot1.Anchored = true
-		Safespot1.CanCollide = true
-		Safespot1.Transparency = .5
-		Safespot1.Parent = game.workspace.Safespot
-
-		local Safespot2 = Instance.new("Part",workspace)
-		Safespot2.Name = "DefendPart1"
-		Safespot2.Position = Vector3.new(10248.2, 13, 10002.4)
-		Safespot2.Size = Vector3.new(5, 117, 496)
-		Safespot2.Anchored = true
-		Safespot2.CanCollide = true
-		Safespot2.Transparency = .5
-		Safespot2.Parent = game.workspace.Safespot
-
-		local Safespot3 = Instance.new("Part",workspace)
-		Safespot3.Name = "DefendPart2"
-		Safespot3.Position = Vector3.new(9998.13, 13, 10247.2)
-		Safespot3.Size = Vector3.new(497, 117, 6)
-		Safespot3.Anchored = true
-		Safespot3.CanCollide = true
-		Safespot3.Transparency = .5
-		Safespot3.Parent = game.workspace.Safespot
-
-		local Safespot4 = Instance.new("Part",workspace)
-		Safespot4.Name = "DefendPart3"
-		Safespot4.Position = Vector3.new(9752.71, 13, 9999.28)
-		Safespot4.Size = Vector3.new(7, 117, 490)
-		Safespot4.Anchored = true
-		Safespot4.CanCollide = true
-		Safespot4.Transparency = .5
-		Safespot4.Parent = game.workspace.Safespot
-
-		local Safespot5 = Instance.new("Part",workspace)
-		Safespot5.Name = "DefendPart4"
-		Safespot5.Position = Vector3.new(10001.1, 76, 9999.66)
-		Safespot5.Size = Vector3.new(491, 10, 491)
-		Safespot5.Anchored = true
-		Safespot5.CanCollide = true
-		Safespot5.Transparency = .5
-		Safespot5.Parent = game.workspace.Safespot
-	end
-
-	---AntiVoidBadge---
-
-	if workspace:FindFirstChild("Psycho") == nil then
-		local Psycho = Instance.new("Part", workspace)
-		Psycho.Position = Vector3.new(17800.9082, 2947, -226.017517, -0.248515129, 0.00487846136, -0.968615651, 0.966844261, -0.0594091415, -0.248359889, -0.0587562323, -0.998221755, 0.0100474358)
-		Psycho.Name = "Psycho"
-		Psycho.Size = Vector3.new(2000, 1, 2000)
-		Psycho.Material = "ForceField"
-		Psycho.Anchored = true
-		Psycho.Transparency = 1
-		Psycho.CanCollide = false
-
-		local Kraken = Instance.new("Part", Psycho)
-		Kraken.Position = Vector3.new(221, 29, -12632)
-		Kraken.Name = "Kraken"
-		Kraken.Size = Vector3.new(2000, 1, 2000)
-		Kraken.Material = "ForceField"
-		Kraken.Anchored = true
-		Kraken.Transparency = 1
-		Kraken.CanCollide = false
-
-		local Retro1 = Instance.new("Part", Psycho)
-		Retro1.Position = Vector3.new(-16643.62890625, 770.0464477539062, 4707.8193359375)
-		Retro1.Name = "Retro1"
-		Retro1.Size = Vector3.new(2000, 1, 2000)
-		Retro1.Material = "ForceField"
-		Retro1.Anchored = true
-		Retro1.Transparency = 1
-		Retro1.CanCollide = false
-
-		local Retro2 = Instance.new("Part", Retro1)
-		Retro2.Position = Vector3.new(-16862.791015625, -7.879573822021484, 4791.55517578125)
-		Retro2.Name = "Retro2"
-		Retro2.Size = Vector3.new(2000, 1, 2000)
-		Retro2.Material = "ForceField"
-		Retro2.Anchored = true
-		Retro2.Transparency = 1
-		Retro2.CanCollide = false
-
-		local Retro3 = Instance.new("Part", Retro1)
-		Retro3.Position = Vector3.new(-28023.3046875, -219.92381286621094, 4906.6015625)
-		Retro3.Name = "Retro3"
-		Retro3.Size = Vector3.new(2000, 1, 2000)
-		Retro3.Material = "ForceField"
-		Retro3.Anchored = true
-		Retro3.Transparency = 1
-		Retro3.CanCollide = false
-	end
-
-	---Anti Void---
-
-	if workspace:FindFirstChild("BobWalk1") == nil then
-		local BobWalk1 = Instance.new("Part", workspace)
-		BobWalk1.CanCollide = false
-		BobWalk1.Anchored = true
-		BobWalk1.CFrame = CFrame.new(23.2798462, -19.8447475, 1.83554196, -1, 0, 0, 0, -1, 0, 0, 0, 1)
-		BobWalk1.Size = Vector3.new(1139.2593994140625, 1.5, 2048)
-		BobWalk1.Name = "BobWalk1"
-		BobWalk1.Transparency = 1
-
-		local BobWalk2 = Instance.new("Part", BobWalk1)
-		BobWalk2.CanCollide = false
-		BobWalk2.Anchored = true
-		BobWalk2.CFrame = CFrame.new(-458.458344, -9.25, 1.83554196, -1, 0, 0, 0, -1, 0, 0, 0, 1)
-		BobWalk2.Size = Vector3.new(1139.2593994140625, 1.5, 2048)
-		BobWalk2.Name = "BobWalk2"
-		BobWalk2.Transparency = 1
-
-		local BobWalk3 = Instance.new("Part", BobWalk1)
-		BobWalk3.CanCollide = false
-		BobWalk3.Anchored = true
-		BobWalk3.CFrame = CFrame.new(-690.65979, 47.25, 1.83554196, -1, 0, 0, 0, -1, 0, 0, 0, 1)
-		BobWalk3.Size = Vector3.new(674.8563232421875, 0.6048492789268494, 2048)
-		BobWalk3.Name = "BobWalk3"
-		BobWalk3.Transparency = 1
-
-		local BobWalk4 = Instance.new("Part", BobWalk1)
-		BobWalk4.CanCollide = false
-		BobWalk4.Anchored = true
-		BobWalk4.CFrame = CFrame.new(402.964996, 29.25, 222.310089, -1, 0, 0, 0, -1, 0, 0, 0, 1)
-		BobWalk4.Size = Vector3.new(379.88922119140625, 1.5, 160.8837127685547)
-		BobWalk4.Name = "BobWalk4"
-		BobWalk4.Transparency = 1
-
-		local BobWalk5 = Instance.new("Part", BobWalk1)
-		BobWalk5.CanCollide = false
-		BobWalk5.Anchored = true
-		BobWalk5.Orientation = Vector3.new(0, 0, 171.728)
-		BobWalk5.CFrame = CFrame.new(178.719162, -18.9417267, 1.83554196, -0.989596844, -0.143868446, 0, 0.143868446, -0.989596844, 0, 0, 0, 1)
-		BobWalk5.Size = Vector3.new(143.94830322265625, 1.5, 2048)
-		BobWalk5.Name = "BobWalk5"
-		BobWalk5.Transparency= 1
-
-		local BobWalk6 = Instance.new("Part", BobWalk1)
-		BobWalk6.CanCollide = false
-		BobWalk6.Anchored = true
-		BobWalk6.Orientation = Vector3.new(0, 0, 144.782)
-		BobWalk6.CFrame = CFrame.new(-309.152832, 15.4761791, 1.83554196, -0.816968799, -0.576681912, 0, 0.576681912, -0.816968799, 0, 0, 0, 1)
-		BobWalk6.Size = Vector3.new(110.13511657714844, 2.740000009536743, 2048)
-		BobWalk6.Name = "BobWalk6"
-		BobWalk6.Transparency = 1
-
-		local BobWalk7 = Instance.new("Part", BobWalk1)
-		BobWalk7.CanCollide = false
-		BobWalk7.Anchored = true
-		BobWalk7.Orientation = Vector3.new(0, 0, -147.002)
-		BobWalk7.CFrame = CFrame.new(174.971924, 5.34897423, 222.310089, -0.838688731, 0.544611216, 0, -0.544611216, -0.838688731, 0, 0, 0, 1)
-		BobWalk7.Size = Vector3.new(89.76103210449219, 1.5, 160.8837127685547)
-		BobWalk7.Name = "BobWalk7"
-		BobWalk7.Transparency = 1
-
-		local BobWalk8 = Instance.new("Part", BobWalk1)
-		BobWalk8.CanCollide = false
-		BobWalk8.Anchored = true
-		BobWalk8.Orientation = Vector3.new(0.001, -90.002, -138.076)
-		BobWalk8.CFrame = CFrame.new(402.965027, 5.49165154, 74.8157959, 2.98023224e-05, -1.14142895e-05, -1, -0.668144584, -0.744031429, -1.14142895e-05, -0.744031489, 0.668144584, -2.98023224e-05)
-		BobWalk8.Size = Vector3.new(74.23055267333984, 1, 379.88922119140625)
-		BobWalk8.Name = "BobWalk8"
-		BobWalk8.Transparency = 1
-
-		local BobWalk9 = Instance.new("Part", BobWalk1)
-		BobWalk9.CanCollide = false
-		BobWalk9.Anchored = true
-		BobWalk9.CFrame = CFrame.new(402.964996, 29.9136467, 121.981705, -1, 0, 0, 0, -1, 0, 0, 0, 1)
-		BobWalk9.Size = Vector3.new(379.88922119140625, 1.5, 39.77305603027344)
-		BobWalk9.Name = "BobWalk9"
-		BobWalk9.Transparency = 1
-
-		local BobWalk10 = Instance.new("WedgePart", BobWalk1)
-		BobWalk10.CanCollide = false
-		BobWalk10.Anchored = true
-		BobWalk10.Orientation = Vector3.new(-30.453, 117.775, -102.906)
-		BobWalk10.CFrame = CFrame.new(134.084229, -17.8583984, 94.3953705, 0.541196942, -0.354067981, 0.762719929, -0.840263784, -0.192543149, 0.506837189, -0.0325982571, -0.915184677, -0.401714325)
-		BobWalk10.Size = Vector3.new(1, 88.66793823242188, 34.42972946166992)
-		BobWalk10.Name = "BobWalk10"
-		BobWalk10.Transparency = 1
-
-		local BobWalk11 = Instance.new("WedgePart", BobWalk1)
-		BobWalk11.CanCollide = false
-		BobWalk11.Anchored = true
-		BobWalk11.Orientation = Vector3.new(-29.779, 117.596, -13.193)
-		BobWalk11.CFrame = CFrame.new(168.441879, 2.46393585, 125.815231, -0.350553155, -0.534268022, 0.769201458, -0.198098332, 0.845035911, 0.496660322, -0.915352523, 0.0217281878, -0.402067661)
-		BobWalk11.Size = Vector3.new(1, 0.9999924302101135, 82.1865463256836)
-		BobWalk11.Name = "BobWalk11"
-		BobWalk11.Transparency = 1
-
-		local BobWalk12 = Instance.new("WedgePart", BobWalk1)
-		BobWalk12.CanCollide = false
-		BobWalk12.Anchored = true
-		BobWalk12.Orientation = Vector3.new(26.893, -124.388, -108.64)
-		BobWalk12.CFrame = CFrame.new(206.315063, 26.9295502, 105.471031, 0.534210563, -0.415855825, -0.73599112, -0.845072925, -0.285055399, -0.452321947, -0.021697551, 0.863601387, -0.503708005)
-		BobWalk12.Size = Vector3.new(1, 13.53612232208252, 9.847718238830566)
-		BobWalk12.Name = "BobWalk12"
-		BobWalk12.Transparency = 1
-
-		local BobWalk13 = Instance.new("WedgePart", BobWalk1)
-		BobWalk13.CanCollide = false
-		BobWalk13.Anchored = true
-		BobWalk13.Orientation = Vector3.new(-26.893, 55.613, 108.64)
-		BobWalk13.CFrame = CFrame.new(165.965088, 2.12955856, 77.8575592, -0.53421092, -0.415855944, 0.735991359, 0.845073164, -0.285055757, 0.452322066, 0.0216975808, 0.863601625, 0.503708005)
-		BobWalk13.Size = Vector3.new(1, 13.53612232208252, 99.8001480102539)
-		BobWalk13.Name = "BobWalk13"
-		BobWalk13.Transparency = 1
-
-		local BobWalk14 = Instance.new("WedgePart", BobWalk1)
-		BobWalk14.CanCollide = false
-		BobWalk14.Anchored = true
-		BobWalk14.Orientation = Vector3.new(-0.001, 90.003, 48.072)
-		BobWalk14.CFrame = CFrame.new(172.67041, 5.49164963, 74.8157959, -4.58955765e-05, 2.05039978e-05, 1, 0.743987858, 0.668193102, 2.05039978e-05, -0.668193102, 0.743987858, -4.58955765e-05)
-		BobWalk14.Size = Vector3.new(1, 74.23055267333984, 80.699951171875)
-		BobWalk14.Name = "BobWalk14"
-		BobWalk14.Transparency = 1
-
-		local BobWalk15 = Instance.new("WedgePart", BobWalk1)
-		BobWalk15.CanCollide = false
-		BobWalk15.Anchored = true
-		BobWalk15.Orientation = Vector3.new(0, 0, 106.498)
-		BobWalk15.CFrame = CFrame.new(212.753906, 30.0632439, 121.981705, -0.283976078, -0.95883137, 0, 0.95883137, -0.283976078, 0, 0, 0, 1)
-		BobWalk15.Size = Vector3.new(1, 0.8520558476448059, 39.773048400878906)
-		BobWalk15.Name = "BobWalk15"
-		BobWalk15.Transparency = 1
-
-		local BobWalk16 = Instance.new("WedgePart", BobWalk1)
-		BobWalk16.CanCollide = false
-		BobWalk16.Anchored = true
-		BobWalk16.Orientation = Vector3.new(29.777, -62.406, -75.066)
-		BobWalk16.CFrame = CFrame.new(212.884216, 30.1233234, 121.984734, 0.544644356, 0.33412537, -0.769235253, -0.838644743, 0.223680317, -0.496630788, 0.00612583756, 0.915602207, 0.402038693)
-		BobWalk16.Size = Vector3.new(1, 36.08900451660156, 16.739320755004883)
-		BobWalk16.Name = "BobWalk16"
-		BobWalk16.Transparency = 1
-
-		local BobWalk17 = Instance.new("WedgePart", BobWalk1)
-		BobWalk17.CanCollide = false
-		BobWalk17.Anchored = true
-		BobWalk17.Orientation = Vector3.new(-29.777, 117.594, 75.066)
-		BobWalk17.CFrame = CFrame.new(174.83577, 5.55865097, 141.871262, -0.544644356, 0.33412537, 0.769235253, 0.838644743, 0.223680317, 0.496630788, -0.00612583756, 0.915602207, -0.402038693)
-		BobWalk17.Size = Vector3.new(1, 36.08900451660156, 82.1865463256836)
-		BobWalk17.Name = "BobWalk17"
-		BobWalk17.Transparency = 1
-
-		local BobWalk18 = Instance.new("WedgePart", BobWalk1)
-		BobWalk18.CanCollide = false
-		BobWalk18.Anchored = true
-		BobWalk18.Orientation = Vector3.new(30.453, -62.225, 102.906)
-		BobWalk18.CFrame = CFrame.new(165.427338, 2.97219658, 77.884697, -0.541196942, -0.354067981, -0.762719929, 0.840263784, -0.192543149, -0.506837189, 0.0325982571, -0.915184677, 0.401714325)
-		BobWalk18.Size = Vector3.new(1, 88.66793823242188, 47.76289749145508)
-		BobWalk18.Name = "BobWalk18"
-		BobWalk18.Transparency = 1
-	end
-
-	if workspace:FindFirstChild("VoidPart") == nil then
-		local VoidPart = Instance.new("Part", workspace)
-		VoidPart.Position = Vector3.new(-80.5, -10.005, -246.5)
-		VoidPart.Name = "VoidPart"
-		VoidPart.Size = Vector3.new(2048, 1, 2048)
-		VoidPart.Material = "ForceField"
-		VoidPart.Anchored = true
-		VoidPart.Transparency = 1
-		VoidPart.CanCollide = false
-
-		local VoidPart1 = Instance.new("Part", VoidPart)
-		VoidPart1.Position = Vector3.new(0,-50026.5,0)
-		VoidPart1.Name = "VoidPart1"
-		VoidPart1.Size = Vector3.new(2048,70,2048)
-		VoidPart1.Anchored = true
-		VoidPart1.Transparency = 1
-		VoidPart1.CanCollide = false
-
-		local TournamentAntiVoid = Instance.new("Part", VoidPart)
-		TournamentAntiVoid.Name = "TAntiVoid"
-		TournamentAntiVoid.Size = Vector3.new(2048, 15, 2048)
-		TournamentAntiVoid.Position = Vector3.new(3450, 59.009, 68)
-		TournamentAntiVoid.Anchored = true
-		TournamentAntiVoid.Transparency = 1
-		TournamentAntiVoid.CanCollide = false
-	end
-
-	--Tab1 - 15
-	local Tab = Window:MakeTab({
+	--Script - 15
+	local Info = Window:MakeTab({
 		Name = "Info",
 		Icon = "rbxassetid://7734053426",
 		PremiumOnly = false
 	})
 
-	local Tab1 = Window:MakeTab({
+	local Script = Window:MakeTab({
 		Name = "Script",
 		Icon = "rbxassetid://8997387937",
 		PremiumOnly = false
 	})
 
-	local Tab2 = Window:MakeTab({
+	local Anti = Window:MakeTab({
 		Name = "Anti",
 		Icon = "rbxassetid://7734056608",
 		PremiumOnly = false
 	})
 
-	local Tab3 = Window:MakeTab({
+	local Badges = Window:MakeTab({
 		Name = "Badges",
 		Icon = "rbxassetid://7733673987",
 		PremiumOnly = false
 	})
 
-	local Tab5 = Window:MakeTab({
-		Name = "Local",
+	local LocalPlayer = Window:MakeTab({
+		Name = "LocalPlayer",
 		Icon = "rbxassetid://4335489011",
 		PremiumOnly = false
 	})
 
-	local Tab7 = Window:MakeTab({
+	local Misc = Window:MakeTab({
 		Name = "Misc",
 		Icon = "rbxassetid://4370318685",
 		PremiumOnly = false
 	})
 
-	local Tab14 = Window:MakeTab({
-		Name = "Gloves Optional",
+	local GlovesFunctions = Window:MakeTab({
+		Name = "Gloves Functions",
 		Icon = "rbxassetid://7733955740",
 		PremiumOnly = false
 	})
 
-	local Tab11 = Window:MakeTab({
-		Name = "Troller",
+	local Troll = Window:MakeTab({
+		Name = "Troll",
 		Icon = "rbxassetid://7733917120",
 		PremiumOnly = false
 	})
 
-	local Tab15 = Window:MakeTab({
-		Name = "Credit",
+	local Credits = Window:MakeTab({
+		Name = "Credits",
 		Icon = "rbxassetid://7733955511",
 		PremiumOnly = false
 	})
 
-	Tab:AddParagraph("Zalo | Discord"," [ Zalo ]: Bạn muốn vào nhóm Zalo thì vào Credit nhé có link nhóm Zalo đó | [ Discord ]: If you want to join the Server hack slap battles group, go to the credits section ] | Good Luck")
-	local InfoServer = Tab:AddSection({Name = "Info Server"})
-	CanYouFps = Tab:AddLabel("Your Fps [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
-	CanYouPing = Tab:AddLabel("Your Ping [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
-	ServerPlayer = Tab:AddLabel("Player In Server [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
-	TimeServer = Tab:AddLabel("Server Time [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minute | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
-	TimeNow = Tab:AddLabel("Now Time [ "..os.date("%X").." ]")
-	AgeAccYou = Tab:AddLabel("You Account Age [ "..plr.AccountAge.." ]")
-	ViewAgeServer = Tab:AddLabel("Server's Age [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
+	Info:AddParagraph("Zalo | Discord"," [ Zalo ]: Bạn muốn vào nhóm Zalo thì vào Credit nhé có link nhóm Zalo đó | [ Discord ]: If you want to join the Server hack slap battles group, go to the credits section ] | Good Luck")
+	local InfoServer = Info:AddSection({Name = "Info Server"})
+	CanYouFps = Info:AddLabel("Your Fps [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
+	CanYouPing = Info:AddLabel("Your Ping [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
+	ServerPlayer = Info:AddLabel("Player In Server [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
+	TimeServer = Info:AddLabel("Server Time [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minute | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
+	TimeNow = Info:AddLabel("Now Time [ "..os.date("%X").." ]")
+	AgeAccYou = Info:AddLabel("You Account Age [ "..plr.AccountAge.." ]")
+	ViewAgeServer = Info:AddLabel("Server's Age [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
 	if char.Humanoid.Health == 0 then
-		ResetTime = Tab:AddLabel("Time Spawn [ "..Players.RespawnTime.." ]")
+		ResetTime = Info:AddLabel("Time Spawn [ "..Players.RespawnTime.." ]")
 	else
-		ResetTime = Tab:AddLabel("Time Spawn [ Not Dead ]")
+		ResetTime = Info:AddLabel("Time Spawn [ Not Dead ]")
 	end
-	CodeKeypad = Tab:AddLabel("Code Keypad [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
+	CodeKeypad = Info:AddLabel("Code Keypad [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
 	if not game.Workspace:FindFirstChild("Keypad") then
-		KeypadSpawn = Tab:AddLabel("Keypad Spawn [ No ]")
+		KeypadSpawn = Info:AddLabel("Keypad Spawn [ No ]")
 	else
-		KeypadSpawn = Tab:AddLabel("Keypad Spawn [ Yes ]")
+		KeypadSpawn = Info:AddLabel("Keypad Spawn [ Yes ]")
 	end
 	if not game.Workspace:FindFirstChild("Toolbox") then
-		ToolboxSpawn = Tab:AddLabel("Player Spawn Toolbox [ No ]")
+		ToolboxSpawn = Info:AddLabel("Player Spawn Toolbox [ No ]")
 	else
-		ToolboxSpawn = Tab:AddLabel("Player Spawn Toolbox [ Yes ]")
+		ToolboxSpawn = Info:AddLabel("Player Spawn Toolbox [ Yes ]")
 	end
 	if not game.Workspace:FindFirstChild("SiphonOrb") then
-		SiphonOrbSpawn = Tab:AddLabel("Spawn Siphon Orb [ No ]")
+		SiphonOrbSpawn = Info:AddLabel("Spawn Siphon Orb [ No ]")
 	else
-		SiphonOrbSpawn = Tab:AddLabel("Spawn Siphon Orb [ Yes ]")
+		SiphonOrbSpawn = Info:AddLabel("Spawn Siphon Orb [ Yes ]")
 	end
-	CheckSlap = Tab:AddLabel("Check Slap [ "..GetSlaps().." ]")
-	Glove = Tab:AddLabel("You're Using Glove [ "..GetEquippedGlove().." ]")
-	PlateTime = Tab:AddLabel("Plate Time [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
-	Tab:AddParagraph("Game's ID [ "..game.PlaceId.." ]","Server ID [ "..game.JobId.." ]")
-	local InfoServer = Tab:AddSection({Name = "Local Player"})
+	CheckSlap = Info:AddLabel("Check Slap [ "..GetSlaps().." ]")
+	Glove = Info:AddLabel("You're Using Glove [ "..GetEquippedGlove().." ]")
+	PlateTime = Info:AddLabel("Plate Time [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
+	Info:AddParagraph("Game's ID [ "..game.PlaceId.." ]","Server ID [ "..game.JobId.." ]")
+	local InfoServer = Info:AddSection({Name = "Local Player"})
 	if char:FindFirstChild("rock") then
-		WalkspeedYou = Tab:AddLabel("Walk Speed [ Not Walk then rock ]")
-		JumppowerYou = Tab:AddLabel("Jump Power [ Not Jump Power then rock ]")
-		HealthYou = Tab:AddLabel("Health You [ Not Health then rock ]")
-		HipHeightYou = Tab:AddLabel("Hip Height [ Not Hip then rock ]")
+		WalkspeedYou = Info:AddLabel("Walk Speed [ Not Walk then rock ]")
+		JumppowerYou = Info:AddLabel("Jump Power [ Not Jump Power then rock ]")
+		HealthYou = Info:AddLabel("Health You [ Not Health then rock ]")
+		HipHeightYou = Info:AddLabel("Hip Height [ Not Hip then rock ]")
 	else
-		WalkspeedYou = Tab:AddLabel("Walk Speed [ "..char.Humanoid.WalkSpeed.." ]")
-		JumppowerYou = Tab:AddLabel("Jump Power [ "..char.Humanoid.JumpPower.." ]")
-		HealthYou = Tab:AddLabel("Health You [ "..char.Humanoid.Health.." ]")
-		HipHeightYou = Tab:AddLabel("Hip Height [ "..char.Humanoid.HipHeight.." ]")
+		WalkspeedYou = Info:AddLabel("Walk Speed [ "..char.Humanoid.WalkSpeed.." ]")
+		JumppowerYou = Info:AddLabel("Jump Power [ "..char.Humanoid.JumpPower.." ]")
+		HealthYou = Info:AddLabel("Health You [ "..char.Humanoid.Health.." ]")
+		HipHeightYou = Info:AddLabel("Hip Height [ "..char.Humanoid.HipHeight.." ]")
 	end
-	GravityYou = Tab:AddLabel("Gravity [ "..game.Workspace.Gravity.." ]")
-	PositionYou = Tab:AddLabel("Position In Your [ "..tostring(math.round(char.HumanoidRootPart.Position.X)..", ".. math.round(char.HumanoidRootPart.Position.Y)..", "..math.round(char.HumanoidRootPart.Position.Z)).." ]")
+	GravityYou = Info:AddLabel("Gravity [ "..game.Workspace.Gravity.." ]")
+	PositionYou = Info:AddLabel("Position In Your [ "..tostring(math.round(char.HumanoidRootPart.Position.X)..", ".. math.round(char.HumanoidRootPart.Position.Y)..", "..math.round(char.HumanoidRootPart.Position.Z)).." ]")
 
 	local AutoSetInfoServer
-	AutoSetInfo = Tab:AddToggle({
+	AutoSetInfo = Info:AddToggle({
 		Name = "Auto Set Info",
 		Default = false,
 		Callback = function(Value)
@@ -1084,198 +435,198 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end    
 	})
 
-	local InfoServer = Tab:AddSection({Name = "Notification"})
-	Tab:AddLabel("------------------------------[ Warning ]------------------------------")
-	Tab:AddParagraph("[ Admin ]","[ Banned Hackers which node is not good ]")
-	Tab:AddParagraph("[ Record ]","[ When someone records it, you got a 90% ban ]")
-	Tab:AddParagraph("[ Lucky ]","[ If you are lucky enough to survive the banned then you are lucky ]")
-	Tab:AddParagraph("[ Tired ]","I'm Very Tired of Script and Script Update is slow. Please forgive me because I update slowly")
-	Tab:AddParagraph("[ Script Giang ]","This script was created by Giang, but there is a problem when creating a feature but no one testing no one can help me see if it works | I'm really sorry that I couldn't do the feature and it all failed and didn't work | I hope everyone understands me")
-	Tab:AddLabel("------------------------------[ End ]------------------------------")
+	local InfoServer = Info:AddSection({Name = "Notification"})
+	Info:AddLabel("------------------------------[ Warning ]------------------------------")
+	Info:AddParagraph("[ Admin ]","[ Banned Hackers which node is not good ]")
+	Info:AddParagraph("[ Record ]","[ When someone records it, you got a 90% ban ]")
+	Info:AddParagraph("[ Lucky ]","[ If you are lucky enough to survive the banned then you are lucky ]")
+	Info:AddParagraph("[ Tired ]","I'm Very Tired of Script and Script Update is slow. Please forgive me because I update slowly")
+	Info:AddParagraph("[ Script Giang ]","This script was created by Giang, but there is a problem when creating a feature but no one testing no one can help me see if it works | I'm really sorry that I couldn't do the feature and it all failed and didn't work | I hope everyone understands me")
+	Info:AddLabel("------------------------------[ End ]------------------------------")
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Synapse X [ PE Delta ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/delta-hydro/secret-host-haha/main/syn_ui_new.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Codex [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Codex.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Kiwi [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Kiwi-Ui.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Krypton [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Krypton.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Krnl [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Knrl.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Animation [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet('https://raw.githubusercontent.com/IlikeyocutgHAH12/EGEGESGGH/main/FE%20Animation%20GUI.txt'))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Arceus x [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Arceus_X_V3.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Execute | Ui Library [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Execute%20%7C%20UI%20Library.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Kill Player [ PE ]",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Kill%20player"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Keyboard",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/advxzivhsjjdhxhsidifvsh/mobkeyboard/main/main.txt", true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Rejoin Gui",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Rejoin.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Inf yield Delta",
 		Callback = function()
 			loadstring(game:HttpGet("https://gist.githubusercontent.com/lxnnydev/c533c374ca4c1dcef4e1e10e33fa4a0c/raw/03e74f184f801dad77d3ebe1e2f18c6ac87ca612/delta___IY.gistfile1.txt.lua",true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Inf yield",
 		Callback = function()
 			loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Hitbox",
 		Callback = function()
 			loadstring(game:HttpGet(("https://gist.githubusercontent.com/stellar-4242/430ef3087d8d87eb306ca03e728ffbb8/raw/798429dd908b1f4471a1fa569ff62c5e5a93ec61/SLAP.LUA")))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Slap battles new R2O",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/cheesynob39/R2O/main/Games/6403373529.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Auto Farm Bob",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/File/Farm%20Bob.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "CherryUi's SB GUI",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/RandomScriptr3/gggggggg/main/lolez.txt", true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Position Gui",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Position_Gui.lua", true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Fe Fly V3",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Fly_V3.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "MoonUI v10",
 		Callback = function()
 			loadstring(game:HttpGet('https://raw.githubusercontent.com/IlikeyocutgHAH12/MoonUI-v10-/main/MoonUI%20v10'))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Btool Cute",
 		Callback = function()
 			loadstring(game:GetObjects("rbxassetid://6695644299")[1].Source)()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Dex V2",
 		Callback = function()
 			loadstring(game:HttpGet("https://cdn.wearedevs.net/scripts/Dex%20Explorer.txt"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Dex V3",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua", true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "TP gui player",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/TP_Player.lua"))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Turies Spy",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/Reamsrpy.lua", true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Simple Spy",
 		Callback = function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Script/main/RemoteSpy-V2.lua", true))()
 		end    
 	})
 
-	Tab1:AddButton({
+	Script:AddButton({
 		Name = "Hydroxide",
 		Callback = function()
 			local owner = "Upbolt"
@@ -1288,7 +639,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end    
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Teleport Safe",
 		Default = "",
 		Options = {"SafeSpotBox 1.0", "SafeSpotBox 2.0", "Bed"},
@@ -1303,7 +654,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end    
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Retro Obby",
 		Default = "",
 		Options = {"Get Badge", "Show All", "Off Show All", "Teleport Spawn 1", "Teleport Spawn 2", "Teleport Spawn 3", "Click Button"},
@@ -1332,7 +683,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end    
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Repressed Memory",
 		Default = "",
 		Options = {"Show All","Off Show All","Teleport Enter","Teleport Portal","Teleport Bob Plushie","Click Bob Plushie [ Quests Hitman ]"},
@@ -1367,7 +718,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end    
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Map Kraken",
 		Default = "",
 		Options = {"Show All","Off Show All", "Teleport Enter"},
@@ -1382,7 +733,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Reset Player",
 		Callback = function()
 			if char.Humanoid.Health ~= 0 then
@@ -1425,14 +776,14 @@ function GetSlaps()
 	return plr:WaitForChild("leaderstats"):FindFirstChild("Slaps").Value
 end
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Glove Kinetic",
 		Callback = function()
 			
 		end 
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Win Obby Pyscho",
 		Callback = function()
 			if game.Workspace:FindFirstChild("RepressedMemoriesMap") ~= nil then
@@ -1452,7 +803,7 @@ end
 		end 
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Glove Bomb",
 		Callback = function()
 			if GetEquippedGlove() == "Warp" and not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2124919840) then
@@ -1481,7 +832,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Glove Warp",
 		Callback = function()
 			if GetEquippedGlove() == "Swapper" and not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2124914780) then
@@ -1530,7 +881,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Glove Plank",
 		Callback = function()
 			if GetEquippedGlove() == "Fort" and not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 4031317971987872) then
@@ -1552,7 +903,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Glove Blasphemy",
 		Callback = function()
 			if GetEquippedGlove() == "bus" and not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 3335299217032061) then
@@ -1590,7 +941,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Auto Quests Chest All Glove",
 		Callback = function()
 			if char:FindFirstChild("entered") then
@@ -1610,7 +961,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Auto Get Glove FrostBite",
 		Callback = function()
 			plr.OnTeleport:Connect(function(state) 
@@ -1632,7 +983,7 @@ end
 		end 
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Auto Get Glove Admin",
 		Callback = function()
 			plr.OnTeleport:Connect(function(state)
@@ -1666,7 +1017,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Glove Chain",
 		Callback = function()
 			if GetSlaps() >= 1000 then
@@ -1858,7 +1209,7 @@ end
 		end    
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Join Maze Elude",
 		Default = "Auto Keypad",
 		Options = {"Teleport","Auto Keypad"},
@@ -1867,7 +1218,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Counter + Elude",
 		Callback = function()
 			if getgenv().SelectMaze == "Teleport" then
@@ -1955,7 +1306,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Glove [Redacted]",
 		Callback = function()
 			if not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2124847850) then
@@ -1974,7 +1325,7 @@ end
 		end    
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Duck, Orange & Knife Badge",
 		Callback = function()
 			if not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2124760907) and not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2128220957) and not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2124760916) then
@@ -1987,7 +1338,7 @@ end
 		end 
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Ice Skate [Can get it for free]",
 		Callback = function()
 			if not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2906002612987222) then
@@ -1998,7 +1349,7 @@ end
 		end 
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get Lamp [Must have ZZZZZZZ Glove]",
 		Callback = function()
 			--[[
@@ -2010,7 +1361,7 @@ end
 		end 
 	})
 
-	Tab3:AddButton({
+	Badges:AddButton({
 		Name = "Get The Schlop",
 		Callback = function()
 			if GetEquippedGlove() == "Cloud" and game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2130032297) and char:FindFirstChild("entered") == nil then
@@ -2061,7 +1412,7 @@ end
 		end 
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Farm Bob",
 		Default = "Slow",
 		Options = {"Auto Spawn E", "Auto Spawn", "Fast Spawn", "Normal","Super Fast Spawn"},
@@ -2070,7 +1421,7 @@ end
 		end    
 	})
 
-	GetBob = Tab3:AddToggle({
+	GetBob = Badges:AddToggle({
 		Name = "AutoFarm Bob",
 		Default = false,
 		Callback = function(Value)
@@ -2157,7 +1508,7 @@ end
 		end    
 	})
 
-	Tab3:AddToggle({
+	Badges:AddToggle({
 		Name = "Toolbox Farm",
 		Default = false,
 		Callback = function(Value)
@@ -2176,7 +1527,7 @@ end
 		end    
 	})
 
-	Tab3:AddToggle({
+	Badges:AddToggle({
 		Name = "Phase Or Jet Farm",
 		Default = false,
 		Callback = function(Value)
@@ -2193,7 +1544,7 @@ end
 		end    
 	})
 
-	Tab3:AddToggle({
+	Badges:AddToggle({
 		Name = "Siphon Farm",
 		Default = false,
 		Callback = function(Value)
@@ -2212,7 +1563,7 @@ end
 		end    
 	})
 
-	Tab3:AddToggle({
+	Badges:AddToggle({
 		Name = "Phase Or Jet Glitch",
 		Default = false,
 		Callback = function(Value)
@@ -2232,7 +1583,7 @@ end
 		end    
 	})
 
-	Tab3:AddToggle({
+	Badges:AddToggle({
 		Name = "Gift Farm",
 		Default = false,
 		Callback = function(Value)
@@ -2249,7 +1600,7 @@ end
 		end    
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Farm Time",
 		Default = "",
 		Options = {"Voodoo + Fish", "MegaRock"},
@@ -2258,9 +1609,9 @@ end
 		end    
 	})
 
-	FarmTimeServer = Tab3:AddLabel("Farm Time [ 0 ]")
+	FarmTimeServer = Badges:AddLabel("Farm Time [ 0 ]")
 
-	GetFarmTime = Tab3:AddToggle({
+	GetFarmTime = Badges:AddToggle({
 		Name = "AutoFarm Time",
 		Default = false,
 		Callback = function(Value)
@@ -2322,7 +1673,7 @@ end
 		end    
 	})
 
-	Tab3:AddDropdown({
+	Badges:AddDropdown({
 		Name = "Farm Brick",
 		Default = "Slow",
 		Options = {"Slow", "Fast"},
@@ -2331,7 +1682,7 @@ end
 		end    
 	})
 
-	AutoFarmBrick = Tab3:AddToggle({
+	AutoFarmBrick = Badges:AddToggle({
 		Name = "AutoFram Brick",
 		Default = false,
 		Callback = function(Value)
@@ -2354,7 +1705,7 @@ end
 		end    
 	})
 
-	AutoTycoon = Tab3:AddToggle({
+	AutoTycoon = Badges:AddToggle({
 		Name = "Get Tycoon",
 		Default = false,
 		Callback = function(Value)
@@ -2374,7 +1725,7 @@ end
 		end    
 	})
 
-	Tab5:AddSlider({
+	LocalPlayer:AddSlider({
 		Name = "WalkSpeed",
 		Min = 20,
 		Max = 1000,
@@ -2388,7 +1739,7 @@ end
 		end    
 	})
 
-	Tab5:AddTextbox({
+	LocalPlayer:AddTextbox({
 		Name = "WalkSpeed",
 		Default = "UserSpeed",
 		TextDisappear = false,
@@ -2398,7 +1749,7 @@ end
 		end	  
 	})
 
-	Tab5:AddToggle({
+	LocalPlayer:AddToggle({
 		Name = "Walkspeed Set Auto",
 		Default = false,
 		Callback = function(Value)
@@ -2412,7 +1763,7 @@ end
 		end    
 	})
 
-	Tab5:AddSlider({
+	LocalPlayer:AddSlider({
 		Name = "JumpPower",
 		Min = 50,
 		Max = 1000,
@@ -2426,7 +1777,7 @@ end
 		end    
 	})
 
-	Tab5:AddTextbox({
+	LocalPlayer:AddTextbox({
 		Name = "Jumppower",
 		Default = "UserPower",
 		TextDisappear = false,
@@ -2436,7 +1787,7 @@ end
 		end	  
 	})
 
-	Tab5:AddToggle({
+	LocalPlayer:AddToggle({
 		Name = "Jumppower Set Auto",
 		Default = false,
 		Callback = function(Value)
@@ -2450,7 +1801,7 @@ end
 		end    
 	})
 
-	Tab5:AddSlider({
+	LocalPlayer:AddSlider({
 		Name = "Hip Height",
 		Min = 0,
 		Max = 100,
@@ -2464,7 +1815,7 @@ end
 		end    
 	})
 
-	Tab5:AddTextbox({
+	LocalPlayer:AddTextbox({
 		Name = "Hip Height",
 		Default = "UserHeight",
 		TextDisappear = false,
@@ -2474,7 +1825,7 @@ end
 		end	  
 	})
 
-	Tab5:AddToggle({
+	LocalPlayer:AddToggle({
 		Name = "Hip Height Set Auto",
 		Default = false,
 		Callback = function(Value)
@@ -2488,7 +1839,7 @@ end
 		end    
 	})
 
-	Tab5:AddSlider({
+	LocalPlayer:AddSlider({
 		Name = "Gravity",
 		Min = 0,
 		Max = 600,
@@ -2502,7 +1853,7 @@ end
 		end    
 	})
 
-	Tab5:AddToggle({
+	LocalPlayer:AddToggle({
 		Name = "Gravity Set Auto",
 		Default = false,
 		Callback = function(Value)
@@ -2516,7 +1867,7 @@ end
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Prop Ability",
 		Default = "",
 		Options = {"Barrel", "Bench", "Brick", "Bush 1", "Bush 2", "Cauldron", "Diamond", "Frenzy Bot", "Gift", "GoldenSlapple", "Imp", "Jet Orb", "Larry", "MEGAROCK", "Moai Head", "Obby 1", "Obby 2", "Obby 3", "Obby 4", "Obby 5", "Orange", "Oven", "Phase Heart", "Phase Orb", "Rock 1", "Rock 2", "Rock 3", "Sentry", "Slapple", "Snow Peep", "Snow Turret", "bob", "rob","Sbeve"},
@@ -2525,7 +1876,7 @@ end
 		end    
 	})
 
-	Prop = Tab14:AddToggle({
+	Prop = GlovesFunctions:AddToggle({
 		Name = "Auto Spam Prop",
 		Default = false,
 		Callback = function(Value)
@@ -2545,7 +1896,7 @@ end
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Santa Ability",
 		Default = "milk",
 		Options = {"bobplush", "snowpeep", "milk"},
@@ -2554,7 +1905,7 @@ end
 		end    
 	})
 
-	Santa = Tab14:AddToggle({
+	Santa = GlovesFunctions:AddToggle({
 		Name = "Auto Spam Santa",
 		Default = false,
 		Callback = function(Value)
@@ -2572,7 +1923,7 @@ end
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Admin Ability",
 		Default = "Fling",
 		Options = {"Fling", "Anvil", "Invisibility"},
@@ -2581,7 +1932,7 @@ end
 		end    
 	})
 
-	Admin = Tab14:AddToggle({
+	Admin = GlovesFunctions:AddToggle({
 		Name = "Auto Spam Admin [ All Glove ]",
 		Default = false,
 		Callback = function(Value)
@@ -2593,7 +1944,7 @@ end
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Retro Ability",
 		Default = "Rocket Launcher",
 		Options = {"Rocket Launcher", "Ban Hammer", "Bomb"},
@@ -2602,7 +1953,7 @@ end
 		end    
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Auto Spam Retro [ All Glove ]",
 		Default = false,
 		Callback = function(Value)
@@ -2614,7 +1965,7 @@ end
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Slapstick Ability",
 		Default = "runeffect",
 		Options = {"runeffect", "fullcharged", "dash", "addarm","charge","cancelrun","discharge"},
@@ -2623,7 +1974,7 @@ end
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Spam Ability Slapstick",
 		Callback = function()
 			if SlapstickAbility == "runeffect" then
@@ -2646,7 +1997,7 @@ end
 		end    
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Auto Spam Slapstick [ All Glove ]",
 		Default = false,
 		Callback = function(Value)
@@ -2661,7 +2012,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Godmode Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -2687,7 +2038,7 @@ end
 		end	  
 	})
 
-	SavePlayer = Tab14:AddToggle({
+	SavePlayer = GlovesFunctions:AddToggle({
 		Name = "Auto Godmode Player",
 		Default = false,
 		Callback = function(Value)
@@ -2708,7 +2059,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Spam Rojo Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -2734,7 +2085,7 @@ end
 		end	  
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Rojo Ability",
 		Default = "",
 		Options = {"Normal", "Down"},
@@ -2743,7 +2094,7 @@ end
 		end    
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Auto Spam Rojo [ All Glove ]",
 		Default = false,
 		Callback = function(Value)
@@ -2762,7 +2113,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Spam Divebomb Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -2788,7 +2139,7 @@ end
 		end	  
 	})
 
-	Tab14:AddSlider({
+	GlovesFunctions:AddSlider({
 		Name = "Charge Explosion",
 		Min = 0,
 		Max = 100,
@@ -2801,7 +2152,7 @@ end
 		end    
 	})
 
-	AutoSpawnDivebomb = Tab14:AddToggle({
+	AutoSpawnDivebomb = GlovesFunctions:AddToggle({
 		Name = "Auto Spam Divebomb",
 		Default = false,
 		Callback = function(Value)
@@ -2823,7 +2174,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Punish Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -2846,7 +2197,7 @@ end
 	})
 
 	Cancel = false
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Punish Player",
 		Callback = function()
 			if char:FindFirstChild("Swapper") or plr.Backpack:FindFirstChild("Swapper") then
@@ -2880,7 +2231,7 @@ end
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Cancel Punish Player",
 		Callback = function()
 			Cancel = true
@@ -2890,7 +2241,7 @@ end
 	})
 
 	getgenv().PlayerChoose = "Username"
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Player",
 		Default = "Username",
 		Options = {"Username","Random"},
@@ -2899,7 +2250,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Teleport Void Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -2921,7 +2272,7 @@ end
 		end	  
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Teleport Void Player",
 		Callback = function()
 			if getgenv().PlayerChoose == "Username" then
@@ -2971,7 +2322,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Home Run Kill Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -2993,7 +2344,7 @@ end
 		end	  
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Home Run Kill Player",
 		Callback = function()
 			if getgenv().PlayerChoose == "Username" then
@@ -3037,7 +2388,7 @@ end
 		end 
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Hive Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -3059,7 +2410,7 @@ end
 		end	  
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Hive Player",
 		Callback = function()
 			if getgenv().PlayerChoose == "Username" then
@@ -3108,7 +2459,7 @@ end
 		end 
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Quake Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -3130,7 +2481,7 @@ end
 		end	  
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Quake Player",
 		Callback = function()
 			if getgenv().PlayerChoose == "Username" then
@@ -3173,7 +2524,7 @@ end
 		end 
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Cards Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -3199,7 +2550,7 @@ end
 		end	  
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Cards Player",
 		Callback = function()
 			if getgenv().PlayerChoose == "Username" then
@@ -3222,7 +2573,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Oven Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -3244,7 +2595,7 @@ end
 		end	  
 	})
 
-	AutoOven = Tab14:AddToggle({
+	AutoOven = GlovesFunctions:AddToggle({
 		Name = "Auto Oven Player",
 		Default = false,
 		Callback = function(Value)
@@ -3274,7 +2625,7 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Siphon Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -3296,7 +2647,7 @@ end
 		end	  
 	})
 
-	AutoSiphon = Tab14:AddToggle({
+	AutoSiphon = GlovesFunctions:AddToggle({
 		Name = "Auto Siphon Player",
 		Default = false,
 		Callback = function(Value)
@@ -3326,8 +2677,8 @@ end
 		end    
 	})
 
-	Tab14:AddTextbox({
-		Name = "Kick Player Recall",
+	GlovesFunctions:AddTextbox({
+		Name = "Kick Player [Recall]",
 		Default = "Username",
 		TextDisappear = false,
 		Callback = function(Value)
@@ -3348,8 +2699,8 @@ end
 		end	  
 	})
 
-	Tab14:AddButton({
-		Name = "Kick Player Recall",
+	GlovesFunctions:AddButton({
+		Name = "Kick Player [Recall]",
 		Callback = function()
 			if getgenv().PlayerChoose == "Username" then
 				if GetEquippedGlove() == "Recall" and char:FindFirstChild("Recall") and char:FindFirstChild("entered") and char:FindFirstChild("HumanoidRootPart") and Players[PlayerKickRecall].Character:FindFirstChild("entered") and Players[PlayerKickRecall].Character:FindFirstChild("HumanoidRootPart") then
@@ -3399,8 +2750,8 @@ end
 
 local KickPlayerFirework
 
-	Tab14:AddTextbox({
-		Name = "Kick Player Firework",
+	GlovesFunctions:AddTextbox({
+		Name = "Kick Player [Firework]",
 		Default = "Username",
 		TextDisappear = false,
 		Callback = function(Value)
@@ -3421,8 +2772,8 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab14:AddButton({
-		Name = "Kick Player Firework",
+	GlovesFunctions:AddButton({
+		Name = "Kick Player [Firework]",
 		Callback = function()
 			if getgenv().PlayerChoose == "Username" then
 				if GetEquippedGlove() == "Firework" then
@@ -3477,7 +2828,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Auto Sbeve All Player",
 		Default = false,
 		Callback = function(Value)
@@ -3498,7 +2849,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Sbeve All Player",
 		Callback = function()
 			if GetEquippedGlove() == "Sbeve" or char:FindFirstChild("stevebody") then
@@ -3514,7 +2865,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Black Hole",
 		Default = "",
 		Options = {"Normal", "Teleport Cannon Island","Teleport Cannon Island + Black Hole"},
@@ -3523,7 +2874,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Auto Create Black Hole",
 		Callback = function()
 			if getgenv().BlackHoleCre == "Normal" then
@@ -3640,7 +2991,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Auto Enter Map Null",
 		Callback = function()
 			if game.Workspace:FindFirstChild("Blackhole_Particles") == nil then
@@ -3703,7 +3054,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Auto Enter Cannon",
 		Callback = function()
 			if char:FindFirstChild("entered") == nil then
@@ -3734,7 +3085,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Auto Teleport Black Hole",
 		Default = false,
 		Callback = function(Value)
@@ -3750,40 +3101,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
-		Name = "Replica UNO",
-		Callback = function()
-			if char:FindFirstChild("entered") then
-				if char.Humanoid.Health ~= 0 then
-					game:GetService("ReplicatedStorage"):WaitForChild("HumanoidDied"):FireServer(char,false)
-				end
-			elseif char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-				game:GetService("ReplicatedStorage"):WaitForChild("ReverseAbility"):FireServer()
-				wait(0.3)
-				fireclickdetector(workspace.Lobby.Replica.ClickDetector)
-				wait(0.3)
-				repeat task.wait() until char
-				if not char:FindFirstChild("entered") and char:FindFirstChild("HumanoidRootPart") then
-					repeat task.wait()
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport1.TouchInterest.Parent, 0)
-						firetouchinterest(char:WaitForChild("Head"), workspace.Lobby.Teleport1.TouchInterest.Parent, 1)
-					until char:FindFirstChild("entered")
-				end
-				wait(0.07)
-				game:GetService("ReplicatedStorage").Duplicate:FireServer()
-				wait(20)
-				if char.Humanoid.Health ~= 0 then
-					game:GetService("ReplicatedStorage"):WaitForChild("HumanoidDied"):FireServer(char,false)
-				end
-				wait(3.75)
-				fireclickdetector(workspace.Lobby.Reverse.ClickDetector)
-			else
-				OrionLib:MakeNotification({Name = "Error",Content = "You don't have Reverse equipped.",Image = "rbxassetid://7733658504",Time = 5})
-			end
-		end    
-	})
-
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Teleport Old Place",
 		Default = "Yes",
 		Options = {"Yes", "No","Player"},
@@ -3792,8 +3110,8 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddTextbox({
-		Name = "Teleport Player Recall",
+	GlovesFunctions:AddTextbox({
+		Name = "Teleport Player [Recall]",
 		Default = "Username",
 		TextDisappear = false,
 		Callback = function(Value)
@@ -3814,8 +3132,8 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab14:AddButton({
-		Name = "Player Teleport",
+	GlovesFunctions:AddButton({
+		Name = "Player Teleport [Recall]",
 		Callback = function()
 			if char:FindFirstChild("entered") and GetEquippedGlove() == "Recall" and plr.Backpack:FindFirstChild("Recall") == nil then
 				if getgenv().TeleportOldPlace == "Yes" then
@@ -3836,49 +3154,69 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddTextbox({
-		Name = "Grab Player Teleport",
-		Default = "Username",
+	local PlayerToGrabBring
+
+	GlovesFunctions:AddTextbox({
+		Name = "Bring Player Target [Grab]",
+		Default = "Username/Displayname",
 		TextDisappear = false,
 		Callback = function(Value)
-			local targetAbbreviation = Value
-			local targetPlayer
-			for _, v in pairs(Players:GetPlayers()) do
-				if string.sub(v.Name, 1, #targetAbbreviation):lower() == targetAbbreviation:lower() then
-					targetPlayer = v
+			local additional
+			for i, v in pairs(Players:GetPlayers()) do
+				if string.find(Value, v.Name:lower()) or string.find(Value, v.DisplayName:lower()) then
+					PlayerToGrabBring = v.Name
+					additional = v.DisplayName
 					break
+				else
+					PlayerToGrabBring = nil
 				end
 			end
-			if targetPlayer then
-				GrabPlayerGot = targetPlayer.Name
-				OrionLib:MakeNotification({Name = "Error",Content = "Found Player [ "..GrabPlayerGot.." ]",Image = "rbxassetid://7733658504",Time = 5})
-			else
-				OrionLib:MakeNotification({Name = "Error",Content = "Can't find player",Image = "rbxassetid://7733658504",Time = 5})
+			
+			if PlayerToGrabBring ~= nil then
+				OrionLib:MakeNotification({Name = "Player Found",Content = additional .. " (@" .. PlayerToGrabBring .. ")", Image = "rbxasdetid://7733658504",Time = 5})
 			end
-		end	  
+		end
 	})
 
-	Tab14:AddButton({
-		Name = "Grab Player Teleport",
+	GlovesFunctions:AddButton({
+		Name = "Bring Player [Grab]",
 		Callback = function()
-			if GetEquippedGlove() == "Grab" and char:FindFirstChild("entered") and Players[GrabPlayerGot].Character:FindFirstChild("entered") then
-				if getgenv().TeleportOldPlace == "Yes" then
-					OLG = char.HumanoidRootPart.CFrame
-				end
-				char.HumanoidRootPart.CFrame = Players[GrabPlayerGot].Character.HumanoidRootPart.CFrame
-				wait(0.15)
-				game:GetService("ReplicatedStorage").GeneralAbility:FireServer()
-				wait(0.15)
-				if getgenv().TeleportOldPlace == "Yes" then
-					char.HumanoidRootPart.CFrame = OLG
+			if GetEquippedGlove() == "Grab" and PlayerToGrabBring then
+				if char:FindFirstChild("entered") then
+					if Players:FindFirstChild(PlayerToGrabBring) and Players:FindFirstChild(PlayerToGrabBring).Character and Players:FindFirstChild(PlayerToGrabBring).Character:FindFirstChild("entered") then
+						if Players:FindFirstChild(PlayerToGrabBring).Character:FindFirstChild("Humanoid").Health > 0 or not Players:FindFirstChild(PlayerToGrabBring).Character then
+							local LastPlrPosition = char:FindFirstChild("HumanoidRootPart").CFrame
+
+							char:FindFirstChild("HumanoidRootPart").CFrame = Players:FindFirstChild(PlayerToGrabBring).Character:FindFirstChild("HumanoidRootPart").CFrame
+
+							wait(0.15)
+							game:GetService("ReplicatedStorage").GeneralAbility:FireServer()
+							wait(0.15)
+
+							char:FindFirstChild("HumanoidRootPart").CFrame = LastPlrPosition
+						else
+							OrionLib:MakeNotification({Name = "Target Missing",Content = "Target are dead.",Image = "rbxasdetid://7733658504",Time = 5})
+						end
+					else
+						OrionLib:MakeNotification({Name = "Error",Content = "Target aren't in Arena or character missing.",Image = "rbxasdetid://7733658504",Time = 5})
+					end
+				else
+					OrionLib:MakeNotification({Name = "Error",Content = "You aren't in Arena.",Image = "rbxasdetid://7733658504",Time = 5})
 				end
 			else
-				OrionLib:MakeNotification({Name = "Error",Content = "You don't have Grab equipped, or you have to go Arena, or player go to Arena",mage = "rbxasdetid://7733658504",Time = 5})
+				if GetSlaps() > (tonumber(workspace:WaitForChild("Lobby"):WaitForChild("GloveStands"):FindFirstChild("Grab"):FindFirstChild("SlapsInfoPart"):FindFirstChild("SurfaceGui"):FindFirstChild("TextLabel").Text) - 1) then
+					OrionLib:MakeNotification({Name = "Missing Glove",Content = "You don't have Grab equipped.",Image = "rbxasdetid://7733658504",Time = 5})
+				else
+					OrionLib:MakeNotification({Name = "Not Enough Slaps",Content = "You don't have enough slaps to use Grab.",Image = "rbxasdetid://7733658504",Time = 5})
+				end
+				if not PlayerToGrabBring then
+					OrionLib:MakeNotification({Name = "Target Missing",Content = "There are not targets selected to do this action.",Image = "rbxasdetid://7733658504",Time = 5})
+				end
 			end
 		end 
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Kick Player Za Hando",
 		Callback = function()
 			if GetEquippedGlove() == "Za Hando" then
@@ -3906,7 +3244,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Spawn Orb Siphon",
 		Callback = function()
 			if char:FindFirstChild("entered") and GetEquippedGlove() == "Siphon" then
@@ -3921,7 +3259,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Potion",
 		Default = "Speed",
 		Options = {"Grug","idIot","Nightmare","Confusion","Power","Paralyzing","Haste","Invisibility","Explosion","Invincible","Toxic","Freeze","Feather","Speed","Lethal","Slow","Antitoxin","Corrupted Vine","Field"},
@@ -3930,7 +3268,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddSlider({
+	GlovesFunctions:AddSlider({
 		Name = "Medicine Mix Potion",
 		Min = 1,
 		Max = 200,
@@ -3946,7 +3284,7 @@ local KickPlayerFirework
 	if getgenv().PotionChooseNuke == nil then
 		getgenv().PotionChooseNuke = "Normal"
 	end
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Potions",
 		Default = "",
 		Options = {"Nuke", "Normal"},
@@ -3955,7 +3293,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Get Potions",
 		Callback = function()
 			if getgenv().PotionChooseNuke == "Normal" then
@@ -3999,7 +3337,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	PotionAuto = Tab14:AddToggle({
+	PotionAuto = GlovesFunctions:AddToggle({
 		Name = "Auto Potion",
 		Default = false,
 		Callback = function(Value)
@@ -4024,7 +3362,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Potion Throw",
 		Default = "Speed Potion",
 		Options = {"Grug Potion","IdIot Potion","Nightmare Potion","Confusion Potion","Power Potion","Paralyzing Potion","Haste Potion","Invisibility Potion","Expotion","Invincible Potion","Toxic Potion","Freeze Potion","Feather Potion","Speed Potion","Lethal Poison","Slow Potion","Antitoxin Potion"},
@@ -4036,7 +3374,7 @@ local KickPlayerFirework
 	if getgenv().NukeExtend == nil then
 		getgenv().NukeExtend = "90"
 	end
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Nuke Extend",
 		Default = "UseNumber",
 		TextDisappear = false,
@@ -4048,7 +3386,7 @@ local KickPlayerFirework
 	if getgenv().NukeHeightPotion == nil then
 		getgenv().NukeHeightPotion = "-5"
 	end
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Nuke Potion Height",
 		Default = "UseNumber",
 		TextDisappear = false,
@@ -4057,7 +3395,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Place",
 		Default = "",
 		Options = {"Arena", "Island Slapple", "Tournament", "Moai Island", "Player"},
@@ -4066,7 +3404,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	PotionThrowNukeAuto = Tab14:AddToggle({
+	PotionThrowNukeAuto = GlovesFunctions:AddToggle({
 		Name = "Auto Throw Nuke Potion",
 		Default = false,
 		Callback = function(Value)
@@ -4122,7 +3460,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Speed Ping Pong",
 		Default = "UserSpeed",
 		TextDisappear = false,
@@ -4135,7 +3473,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab14:AddSlider({
+	GlovesFunctions:AddSlider({
 		Name = "Extend Ping Pong",
 		Min = 0,
 		Max = 200,
@@ -4148,7 +3486,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	PingPong = Tab14:AddToggle({
+	PingPong = GlovesFunctions:AddToggle({
 		Name = "Ping Pong Orbit",
 		Default = false,
 		Callback = function(Value)
@@ -4193,7 +3531,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	PingPongFling = Tab14:AddToggle({
+	PingPongFling = GlovesFunctions:AddToggle({
 		Name = "Ping Pong Fling",
 		Default = false,
 		Callback = function(Value)
@@ -4223,7 +3561,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Ping Pong Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -4245,7 +3583,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab14:AddSlider({
+	GlovesFunctions:AddSlider({
 		Name = "Extend Ping Pong Player",
 		Min = 0,
 		Max = 50,
@@ -4258,7 +3596,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	PingPongPlayerFling = Tab14:AddToggle({
+	PingPongPlayerFling = GlovesFunctions:AddToggle({
 		Name = "Ping Pong Player",
 		Default = false,
 		Callback = function(Value)
@@ -4284,7 +3622,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Equipped Glove Farm",
 		Default = "",
 		Options = {"Baller","Replica","Blink","Reverse"},
@@ -4305,7 +3643,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Will Teleport Farm",
 		Default = "SafeSpotBox 1.0",
 		Options = {"Up To You","SafeSpotBox 1.0","SafeSpotBox 2.0"},
@@ -4314,7 +3652,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Slap Farm",
 		Default = "Normal",
 		Options = {"Normal","Fast × Slap Farm [ Lag ]"},
@@ -4323,7 +3661,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddSlider({
+	GlovesFunctions:AddSlider({
 		Name = "Slap Farm",
 		Min = 1,
 		Max = 2000,
@@ -4336,291 +3674,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	ReplicaAndReverse = Tab14:AddToggle({
-		Name = "Reverse + Replica Slap Farm",
-		Default = false,
-		Callback = function(Value)
-			ReplicaAndReverseGet = Value 
-			if getgenv().GetSlapGot == "Normal" then
-				if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-					if ReplicaAndReverseGet == true then 
-						coroutine.wrap(SpamReplicaReverse)() 
-					end
-					while ReplicaAndReverseGet do 
-						if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-							for i, v in pairs(workspace:GetChildren()) do 
-								if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-									game:GetService("ReplicatedStorage").b:FireServer(v:WaitForChild("Head"),true)
-								end
-							end
-						end
-						task.wait()
-					end
-				elseif ReplicaAndReverseGet == true then 
-					OrionLib:MakeNotification({Name = "Error",Content = "You don't have Reverse equipped or you have in lobby.",Image = "rbxassetid://7733658504",Time = 5}) 
-					wait(0.05)
-					ReplicaAndReverse:Set(false) 
-				end
-			elseif getgenv().GetSlapGot == "Fast × Slap Farm [ Lag ]" then
-				if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-					if ReplicaAndReverseGet == true then 
-						coroutine.wrap(SpamReplicaReverse)() 
-					end
-					while ReplicaAndReverseGet do 
-						if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-							for i, v in pairs(workspace:GetChildren()) do 
-								if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-									for i = 1,getgenv().SlapFarmGet do
-										if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-											game:GetService("ReplicatedStorage").b:FireServer(v:WaitForChild("Head"),true)
-										end
-									end
-								end
-							end
-						end
-						task.wait(0.07)
-					end
-				elseif ReplicaAndReverseGet == true then 
-					OrionLib:MakeNotification({Name = "Error",Content = "You don't have Reverse equipped or you have in lobby.",Image = "rbxassetid://7733658504",Time = 5}) 
-					wait(0.05)
-					ReplicaAndReverse:Set(false) 
-				end
-			end
-		end    
-	})
-
-	BlinkAndReverse = Tab14:AddToggle({
-		Name = "Reverse + Blink Slap Farm",
-		Default = false,
-		Callback = function(Value)
-			getgenv().BlinkAndReverseGet = Value 
-			if getgenv().GetSlapGot == "Normal" then
-				if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-					if getgenv().BlinkAndReverseGet == true then 
-						coroutine.wrap(SpamBlinkReverse)() 
-					end
-					while getgenv().BlinkAndReverseGet do 
-						if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-							for i, v in pairs(workspace:GetChildren()) do 
-								if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-									game:GetService("ReplicatedStorage").b:FireServer(v:WaitForChild("Head"),true)
-								end
-							end
-						end
-						task.wait()
-					end
-				elseif getgenv().BlinkAndReverseGet == true then 
-					OrionLib:MakeNotification({Name = "Error",Content = "You don't have Reverse equipped or you have in lobby.",Image = "rbxassetid://7733658504",Time = 5}) 
-					wait(0.05)
-					BlinkAndReverse:Set(false) 
-				end
-			elseif getgenv().GetSlapGot == "Fast × Slap Farm [ Lag ]" then
-				if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-					if getgenv().BlinkAndReverseGet == true then 
-						coroutine.wrap(SpamBlinkReverse)() 
-					end
-					while getgenv().BlinkAndReverseGet do 
-						if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-							for i, v in pairs(workspace:GetChildren()) do 
-								if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-									for i = 1,getgenv().SlapFarmGet do
-										if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-											game:GetService("ReplicatedStorage").b:FireServer(v:WaitForChild("Head"),true)
-										end
-									end
-								end
-							end
-						end
-						task.wait(0.07)
-					end
-				elseif getgenv().BlinkAndReverseGet == true then 
-					OrionLib:MakeNotification({Name = "Error",Content = "You don't have Reverse equipped or you have in lobby.",Image = "rbxassetid://7733658504",Time = 5}) 
-					wait(0.05)
-					BlinkAndReverse:Set(false) 
-				end
-			end
-		end    
-	})
-
-	ReplicaBlinkReverseBaller = Tab14:AddToggle({
-		Name = "Reverse + Replica & Blink | Baller Slap Farm",
-		Default = false,
-		Callback = function(Value)
-			getgenv().ReplicaBlinkReverseBaller = Value 
-			if getgenv().GetSlapGot == "Normal" then
-				if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-					if getgenv().ReplicaBlinkReverseBaller == true then 
-						coroutine.wrap(SpamReplicaBlinkReverseAndBaller)() 
-					end
-					while getgenv().ReplicaBlinkReverseBaller do 
-						if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-							for i, v in pairs(workspace:GetChildren()) do 
-								if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-									game:GetService("ReplicatedStorage").b:FireServer(v:WaitForChild("Head"),true)
-								end
-							end
-						end
-						task.wait()
-					end
-				elseif getgenv().ReplicaBlinkReverseBaller == true then 
-					OrionLib:MakeNotification({Name = "Error",Content = "You don't have Reverse equipped or you have in lobby.",Image = "rbxassetid://7733658504",Time = 5}) 
-					wait(0.05)
-					ReplicaAndReverse:Set(false) 
-				end
-			elseif getgenv().GetSlapGot == "Fast × Slap Farm [ Lag ]" then
-				if char:FindFirstChild("entered") == nil and GetEquippedGlove() == "Reverse" then
-					if getgenv().ReplicaBlinkReverseBaller == true then 
-						coroutine.wrap(SpamReplicaBlinkReverseAndBaller)() 
-					end
-					while getgenv().ReplicaBlinkReverseBaller do 
-						if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-							for i, v in pairs(workspace:GetChildren()) do 
-								if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-									for i = 1,getgenv().SlapFarmGet do
-										if char:FindFirstChild("entered") and char.Humanoid.Health ~= 0 then
-											game:GetService("ReplicatedStorage").b:FireServer(v:WaitForChild("Head"),true)
-										end
-									end
-								end
-							end
-						end
-						task.wait()
-					end
-				elseif getgenv().ReplicaBlinkReverseBaller == true then 
-					OrionLib:MakeNotification({Name = "Error",Content = "You don't have Reverse equipped or you have in lobby.",Image = "rbxassetid://7733658504",Time = 5}) 
-					wait(0.05)
-					ReplicaAndReverse:Set(false) 
-				end
-			end
-		end    
-	})
-
-	ReplicaAndBallerFarm = Tab14:AddToggle({
-		Name = "Baller & Replica Slap Farm",
-		Default = false,
-		Callback = function(Value)
-			ReplicaBallerFarm = Value 
-			if GetEquippedGlove() == "Baller" then 
-				if ReplicaBallerFarm == true then 
-					coroutine.wrap(SpamReplicaBaller)() 
-				end
-				while ReplicaBallerFarm do 
-					for i, v in pairs(workspace:GetChildren()) do 
-						if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then 
-							game.ReplicatedStorage.b:FireServer(v:WaitForChild("HumanoidRootPart"),true)
-						end
-					end
-					task.wait()
-				end
-			elseif ReplicaBallerFarm == true then 
-				OrionLib:MakeNotification({Name = "Error",Content = "You don't have Baller equipped.",Image = "rbxassetid://7733658504",Time = 5}) 
-				wait(0.05)
-				ReplicaAndBallerFarm:Set(false) 
-			end 
-		end    
-	})
-
-	ReplicaAndBallerAndBlinkFarm = Tab14:AddToggle({
-		Name = "Baller & Replica & Bink Slap Farm",
-		Default = false,
-		Callback = function(Value)
-			ReplicaBallerBlinkFarm = Value 
-			if GetEquippedGlove() == "Blink" then 
-				if ReplicaBallerBlinkFarm == true then 
-					coroutine.wrap(SpamReplicaBallerBlink)() 
-				end
-				while ReplicaBallerBlinkFarm do 
-					for i, v in pairs(workspace:GetChildren()) do 
-						if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then 
-							game.ReplicatedStorage.b:FireServer(v:WaitForChild("HumanoidRootPart"),true)
-						end
-					end
-					task.wait()
-				end
-			elseif ReplicaBallerBlinkFarm == true then 
-				OrionLib:MakeNotification({Name = "Error",Content = "You don't have Blink equipped.",Image = "rbxassetid://7733658504",Time = 5}) 
-				wait(0.05)
-				ReplicaAndBallerAndBlinkFarm:Set(false) 
-			end 
-		end    
-	})
-
-	FarmBaller = Tab14:AddToggle({
-		Name = "Auto Slap Baller",
-		Default = false,
-		Callback = function(Value)
-			getgenv().BallerFarm = Value
-			if GetEquippedGlove() == "Baller" and char:FindFirstChild("entered") then
-				if getgenv().BallerFarm == true then
-					coroutine.wrap(SpamBaller)()
-				end
-				while getgenv().BallerFarm and GetEquippedGlove() == "Baller" do
-					for _, v in pairs(workspace:GetChildren()) do
-						if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-							game.ReplicatedStorage.GeneralHit:FireServer(v:WaitForChild("HumanoidRootPart"),true)
-						end
-					end
-					task.wait()
-				end
-			elseif getgenv().BallerFarm == true then
-				OrionLib:MakeNotification({Name = "Error",Content = "You don't have Baller equipped or you aren't in the arena.",Image = "rbxassetid://7733658504",Time = 5})
-				wait(0.05)
-				FarmBaller:Set(false)
-			end
-		end    
-	})
-
-	FarmReplica = Tab14:AddToggle({
-		Name = "Auto Slap Replica",
-		Default = false,
-		Callback = function(Value)
-			ReplicaFarm = Value
-			if GetEquippedGlove() == "Replica" and char.IsInDefaultArena.Value == true then
-				if ReplicaFarm == true then
-					coroutine.wrap(SpamReplica)()
-				end
-				while ReplicaFarm and GetEquippedGlove() == "Replica" and char.IsInDefaultArena.Value == true do
-					for i, v in pairs(workspace:GetChildren()) do
-						if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-							game.ReplicatedStorage.b:FireServer(v:WaitForChild("HumanoidRootPart"),true)
-						end
-					end
-					task.wait()
-				end
-			elseif ReplicaFarm == true then
-				OrionLib:MakeNotification({Name = "Error",Content = "You don't have Replica equipped or you aren't in the island default.",Image = "rbxassetid://7733658504",Time = 5})
-				wait(0.05)
-				FarmReplica:Set(false)
-			end
-		end    
-	})
-
-	FarmBlink = Tab14:AddToggle({
-		Name = "Auto Slap Blink",
-		Default = false,
-		Callback = function(Value)
-			BlinkFarm = Value
-			if GetEquippedGlove() == "Blink" and char:FindFirstChild("entered") then
-				if BlinkFarm == true then
-					coroutine.wrap(SpamBlink)()
-				end
-				while BlinkFarm and GetEquippedGlove() == "Blink" and char:FindFirstChild("entered") do
-					for i, v in pairs(workspace:GetChildren()) do
-						if v.Name:match(plr.Name) and v:FindFirstChild("HumanoidRootPart") then
-							game.ReplicatedStorage.GeneralHit:FireServer(v:WaitForChild("HumanoidRootPart"),true)
-						end
-					end
-					task.wait()
-				end
-			elseif BlinkFarm == true then
-				OrionLib:MakeNotification({Name = "Error",Content = "You don't have Blink equipped or you aren't in the arena.",Image = "rbxassetid://7733658504",Time = 5})
-				wait(0.05)
-				FarmBlink:Set(false)
-			end
-		end    
-	})
-
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Ingredient",
 		Default = "",
 		Options = {"Autumn Sprout", "Blood Rose", "Blue Crystal", "Dark Root", "Dire Flower","Elder Wood", "Fire Flower", "Glowing Mushroom", "Hazel Lily", "Jade Stone","Lamp Grass", "Mushroom", "Plane Flower", "Red Crystal", "Wild Vine", "Winter Rose","Cake Mix"},
@@ -4629,7 +3683,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Get Alchemist Ingredients",
 		Callback = function()
 			if GetEquippedGlove() == "Alchemist" then
@@ -4640,7 +3694,7 @@ local KickPlayerFirework
 		end 
 	})
 
-	GetAlchemist = Tab14:AddToggle({
+	GetAlchemist = GlovesFunctions:AddToggle({
 		Name = "Auto Get Alchemist Ingredients",
 		Default = false,
 		Callback = function(Value)
@@ -4658,7 +3712,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	GetAllAlchemist = Tab14:AddToggle({
+	GetAllAlchemist = GlovesFunctions:AddToggle({
 		Name = "Get All Alchemist Ingredients",
 		Default = false,
 		Callback = function(Value)
@@ -4692,7 +3746,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddSlider({
+	GlovesFunctions:AddSlider({
 		Name = "Extend HitBox Rob",
 		Min = 5,
 		Max = 400,
@@ -4705,7 +3759,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddColorpicker({
+	GlovesFunctions:AddColorpicker({
 		Name = "Color Hitbox Rob",
 		Default = Color3.fromRGB(255, 255, 255),
 		Callback = function(Value)
@@ -4713,7 +3767,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Hitbox All Rob & Color",
 		Default = false,
 		Callback = function(Value)
@@ -4738,7 +3792,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Godmode Glove",
 		Default = "Golden",
 		Options = {"Reverse","Golden"},
@@ -4747,7 +3801,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Auto Godmode",
 		Default = false,
 		Callback = function(Value)
@@ -4771,7 +3825,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddSlider({
+	GlovesFunctions:AddSlider({
 		Name = "Speed Cloud",
 		Min = 0.1,
 		Max = 1.2,
@@ -4784,7 +3838,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	CloudSpeed = Tab14:AddToggle({
+	CloudSpeed = GlovesFunctions:AddToggle({
 		Name = "Auto Set Cloud Speed",
 		Default = false,
 		Callback = function(Value)
@@ -4806,7 +3860,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Cloud Bring",
 		Default = "",
 		Options = {"Player","Your"},
@@ -4815,7 +3869,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Bring Cloud Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -4837,7 +3891,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	CloudBringSit = Tab14:AddToggle({
+	CloudBringSit = GlovesFunctions:AddToggle({
 		Name = "Auto Bring Cloud",
 		Default = false,
 		Callback = function(Value)
@@ -4871,7 +3925,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddDropdown({
+	GlovesFunctions:AddDropdown({
 		Name = "Firework Bring",
 		Default = "",
 		Options = {"Player","Your"},
@@ -4880,7 +3934,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddTextbox({
+	GlovesFunctions:AddTextbox({
 		Name = "Bring Firework Player",
 		Default = "Username",
 		TextDisappear = false,
@@ -4902,7 +3956,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	FireworkBringSit = Tab14:AddToggle({
+	FireworkBringSit = GlovesFunctions:AddToggle({
 		Name = "Auto Bring Firework",
 		Default = false,
 		Callback = function(Value)
@@ -4959,7 +4013,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	FullKinetic = Tab14:AddToggle({
+	FullKinetic = GlovesFunctions:AddToggle({
 		Name = "Auto Full Kinetic",
 		Default = false,
 		Callback = function(Value)
@@ -4977,7 +4031,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddButton({
+	GlovesFunctions:AddButton({
 		Name = "Infinite Invisibility",
 		Callback = function()
 			if char:FindFirstChild("entered") == nil and GetSlaps() >= 666 then
@@ -4997,7 +4051,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddColorpicker({
+	GlovesFunctions:AddColorpicker({
 		Name = "Color Skin",
 		Default = Color3.fromRGB(255, 0, 0),
 		Callback = function(Value)
@@ -5005,7 +4059,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	ColorSkin = Tab14:AddToggle({
+	ColorSkin = GlovesFunctions:AddToggle({
 		Name = "Auto Color Skin",
 		Default = false,
 		Callback = function(Value)
@@ -5023,7 +4077,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	RainBox = Tab14:AddToggle({
+	RainBox = GlovesFunctions:AddToggle({
 		Name = "Auto Rainbow",
 		Default = false,
 		Callback = function(Value)
@@ -5042,7 +4096,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab14:AddToggle({
+	GlovesFunctions:AddToggle({
 		Name = "Invisible Reverse [Visual]",
 		Default = false,
 		Callback = function(Value)
@@ -5060,8 +4114,8 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
-		Name = "Infinity Jump",
+	Misc:AddToggle({
+		Name = "Infinite Jump",
 		Default = false,
 		Callback = function(Value)
 			getgenv().InfiniteJump = Value
@@ -5073,7 +4127,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Godmode",
 		Default = "",
 		Options = {"Godmode", "Godmode + Invisibility"},
@@ -5136,7 +4190,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Teleport",
 		Default = "",
 		Options = {"Arena", "Lobby", "Hunter Room", "Brazil", "Island Slapple", "Plate", "Tournament", "Cannon Island", "Equip Glovel", "Keypad", "Cube Of Death", "Moai Island", "Default Arena", "Island 1", "Island 2", "Island 3"},
@@ -5187,7 +4241,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Animation Combat",
 		Default = "",
 		Options = {"Skukuchi Attacker", "Skukuchi Target", "Bomb Throw", "Bubble Shoot", "Revolver", "Ban Hammer", "Slapstick", "Dual", "Slap", "Bomb", "Rocket Launcher", "Rojo", "Rojo Recoil", "Thor", "Rob"},
@@ -5226,7 +4280,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Animation",
 		Default = "Id Animation",
 		TextDisappear = false,
@@ -5235,7 +4289,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Start Animation [From Custom Animation By ID]",
 		Callback = function()
 			if game.ReplicatedStorage:FindFirstChild("Animation") == nil then
@@ -5253,7 +4307,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Stop Animation | Destroy",
 		Callback = function()
 			if game.ReplicatedStorage:FindFirstChild("Animation") ~= nil then
@@ -5263,7 +4317,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Autofarm Slapples",
 		Default = false,
 		Callback = function(Value)
@@ -5282,7 +4336,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Autofarm Candy",
 		Default = false,
 		Callback = function(Value)
@@ -5299,7 +4353,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Player Teleport",
 		Default = "Username",
 		TextDisappear = false,
@@ -5321,14 +4375,14 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Teleport To Player",
 		Callback = function()
 			char.HumanoidRootPart.CFrame = Players[getgenv().PlayerTeleport].Character.HumanoidRootPart.CFrame
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Player View",
 		Default = "Username",
 		TextDisappear = false,
@@ -5350,7 +4404,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Auto View Player",
 		Default = false,
 		Callback = function(Value)
@@ -5369,7 +4423,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Speed Fly",
 		Default = "Userspeed",
 		TextDisappear = false,
@@ -5379,7 +4433,7 @@ local KickPlayerFirework
 	})
 
 	getgenv().SetSpeedFly = 100
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Start Fly",
 		Default = false,
 		Callback = function(Value)
@@ -5430,7 +4484,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Pocket",
 		Default = "Add All Player",
 		Options = {"Add All Player","Remove All Player"},
@@ -5439,7 +4493,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Pocket Player",
 		Callback = function()
 			if getgenv().StartMusicGot == "Add All Player" then
@@ -5462,7 +4516,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Play Pocket Radio",
 		Default = "UserIDMusic",
 		TextDisappear = false,
@@ -5471,7 +4525,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Music",
 		Default = "Play",
 		Options = {"Play","Stop"},
@@ -5480,7 +4534,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Play Music",
 		Callback = function()
 			if getgenv().StartMusicGot == "Play" then
@@ -5499,7 +4553,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Auto Keypad",
 		Callback = function()
 			if not workspace:FindFirstChild("Keypad") then
@@ -5525,7 +4579,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Notifykeypad = Tab7:AddToggle({
+	Notifykeypad = Misc:AddToggle({
 		Name = "Auto Notification Keypad",
 		Default = false,
 		Callback = function(Value)
@@ -5544,7 +4598,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	NotifyToolbox = Tab7:AddToggle({
+	NotifyToolbox = Misc:AddToggle({
 		Name = "Auto Notification ToolBox",
 		Default = false,
 		Callback = function(Value)
@@ -5563,7 +4617,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	NotifyAdminJoin = Tab7:AddToggle({
+	NotifyAdminJoin = Misc:AddToggle({
 		Name = "Auto Notification Admin Join",
 		Default = false,
 		Callback = function(Value)
@@ -5583,7 +4637,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Write Code Keypad",
 		Default = "",
 		TextDisappear = false,
@@ -5592,7 +4646,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Enter Keypad",
 		Default = "Enter",
 		Options = {"Not Enter","Enter"},
@@ -5601,7 +4655,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Write Code Keypad Start",
 		Callback = function()
 			if getgenv().EnterKeypad == "Not Enter" then
@@ -5634,7 +4688,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Easter Egg Code",
 		Default = "",
 		Options = {"911","8008","666","6969","1987"},
@@ -5643,7 +4697,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Easter Egg Keypad",
 		Callback = function()
 			if not workspace:FindFirstChild("Keypad") then
@@ -5662,7 +4716,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "ID Badge",
 		Default = "UseId",
 		TextDisappear = false,
@@ -5671,7 +4725,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Check Badge",
 		Callback = function()
 			if not game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, getgenv().IdBadgeGetNotify) then
@@ -5682,7 +4736,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Retro Help",
 		Default = "",
 		Options = {"Get Retro","Teleport Button","Enter Retro"},
@@ -5691,7 +4745,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Help Player Retro",
 		Default = "Username",
 		TextDisappear = false,
@@ -5713,7 +4767,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Player Help Retro",
 		Callback = function()
 			if getgenv().HelpPlayerGetHehe == "Get Retro" then
@@ -5768,7 +4822,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Help Player Get Quake",
 		Default = "Username",
 		TextDisappear = false,
@@ -5790,7 +4844,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Start Help Player [Quake]",
 		Callback = function()
 			if GetEquippedGlove() == "Home Run" and char:FindFirstChild("entered") == nil and Players[getgenv().HelpPlayerGetQuake].leaderstats.Glove.Value == "Berserk" then
@@ -5816,7 +4870,7 @@ local KickPlayerFirework
 		end 
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Help Player Get Goofy",
 		Default = "Username",
 		TextDisappear = false,
@@ -5838,7 +4892,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Start Help Player [Goofy]",
 		Callback = function()
 			if GetEquippedGlove() == "Confusion" and char:FindFirstChild("entered") == nil and game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 2133016756) then
@@ -5862,7 +4916,7 @@ local KickPlayerFirework
 		end 
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Will Teleport Help",
 		Default = "Up To You",
 		Options = {"Up To You","SafeSpotBox 1.0","SafeSpotBox 2.0"},
@@ -5871,7 +4925,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Help Player Get Berserk",
 		Default = "Username",
 		TextDisappear = false,
@@ -5893,7 +4947,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddSlider({
+	Misc:AddSlider({
 		Name = "Time Help Berserk",
 		Min = 1,
 		Max = 3,
@@ -5906,7 +4960,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Start Help Player [Berserk]",
 		Callback = function()
 			if GetEquippedGlove() == "Kinetic" and char:FindFirstChild("entered") and Players[getgenv().HelpPlayerGetBerserk].Character:FindFirstChild("entered") then
@@ -5952,7 +5006,7 @@ local KickPlayerFirework
 		end 
 	})
 
-	Tab7:AddSlider({
+	Misc:AddSlider({
 		Name = "HipHeight AutoFarm Slap",
 		Min = 0,
 		Max = 20,
@@ -5965,7 +5019,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "AutoFarm Slap",
 		Default = false,
 		Callback = function(Value)
@@ -5990,7 +5044,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Auto Slap Ball",
 		Default = false,
 		Callback = function(Value)
@@ -6013,7 +5067,7 @@ local KickPlayerFirework
 	})
 
 	getgenv().OnAbility = false
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Auto Spam Ability",
 		Default = false,
 		Callback = function(Value)
@@ -6477,7 +5531,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Ability Spam All Glove",
 		Default = "Null",
 		Options = {"Null", "Rhythm Explosion"},
@@ -6486,7 +5540,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Spam Ability All Glove",
 		Default = false,
 		Callback = function(Value)
@@ -6502,7 +5556,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Spam Ability 250 Kill",
 		Default = false,
 		Callback = function(Value)
@@ -6516,7 +5570,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "AutoFarm Kill",
 		Default = false,
 		Callback = function(Value)
@@ -6559,7 +5613,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	RhythmNote = Tab7:AddToggle({
+	RhythmNote = Misc:AddToggle({
 		Name = "Infinite Rhythm",
 		Default = false,
 		Callback = function(Value)
@@ -6579,7 +5633,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Auto Play Rhythm",
 		Callback = function()
 			plr.PlayerGui.Rhythm.MainFrame.Bars.ChildAdded:Connect(function()
@@ -6590,7 +5644,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Rojo Spawn",
 		Default = "",
 		Options = {"Attack","Attack Fake"},
@@ -6610,7 +5664,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Free All Animations",
 		Callback = function()
 			
@@ -6673,7 +5727,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Destroy All Tycoon",
 		Callback = function()
 			for i,v in pairs(workspace:GetDescendants()) do
@@ -6686,7 +5740,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Glove to Equip",
 		Default = "Default",
 		TextDisappear = true,
@@ -6695,7 +5749,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Equip Glove",
 		Callback = function()
 			if char:FindFirstChild("entered") == nil then
@@ -6737,7 +5791,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Serverhop",
 		Callback = function()
 			local serverList = {}
@@ -6752,7 +5806,7 @@ local KickPlayerFirework
 		end
 	})
 
-	Tab7:AddButton({
+	Misc:AddButton({
 		Name = "Destroy Light & Sky",
 		Callback = function()
 			for _, v in pairs(game.Lighting:GetChildren()) do
@@ -6761,7 +5815,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Enter",
 		Default = "Arena",
 		Options = {"Arena", "Arena Default"},
@@ -6770,7 +5824,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Auto Enter",
 		Default = false,
 		Callback = function(Value)		
@@ -6798,7 +5852,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddSlider({
+	Misc:AddSlider({
 		Name = "Reach Slap Aura",
 		Min = 10,
 		Max = 50,
@@ -6811,7 +5865,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Slap Aura Friend",
 		Default = "Fight",
 		Options = {"Fight", "Not Fight"},
@@ -6820,7 +5874,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Slap Aura Character",
 		Default = "Head",
 		Options = {"HumanoidRootPart", "Head", "Left Arm", "Left Leg", "Right Arm", "Right Leg"},
@@ -6829,7 +5883,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Slap Aura Choose",
 		Default = "Normal",
 		Options = {"Normal", "Reverse"},
@@ -6838,7 +5892,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Slap Aura",
 		Default = false,
 		Callback = function(Value)
@@ -6950,7 +6004,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddSlider({
+	Misc:AddSlider({
 		Name = "Reach Shukuchi",
 		Min = 1,
 		Max = 130,
@@ -6963,7 +6017,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Shukuchi Friend",
 		Default = "Fight",
 		Options = {"Fight", "Not Fight"},
@@ -6972,7 +6026,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AutoShukuchi = Tab7:AddToggle({
+	AutoShukuchi = Misc:AddToggle({
 		Name = "Auto Shukuchi Player",
 		Default = false,
 		Callback = function(Value)
@@ -7025,7 +6079,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddSlider({
+	Misc:AddSlider({
 		Name = "Reach HitBox",
 		Min = 2,
 		Max = 30,
@@ -7038,7 +6092,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Hitbox Player",
 		Default = false,
 		Callback = function(Value)
@@ -7063,7 +6117,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddSlider({
+	Misc:AddSlider({
 		Name = "Extend Glove",
 		Min = 2,
 		Max = 50,
@@ -7076,7 +6130,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Extend Option",
 		Default = "Meat Stick",
 		Options = {"Meat Stick","Pancake","Growth","North Korea Wall","Slight Extend"},
@@ -7085,7 +6139,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Extend Glove",
 		Default = false,
 		Callback = function(Value)
@@ -7156,7 +6210,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddColorpicker({
+	Misc:AddColorpicker({
 		Name = "Color ESP",
 		Default = Color3.fromRGB(111, 255, 0),
 		Callback = function(Value)
@@ -7164,7 +6218,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "ESP Glove",
 		Default = false,
 		Callback = function(Value)
@@ -7209,7 +6263,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddTextbox({
+	Misc:AddTextbox({
 		Name = "Auto Change Nametag",
 		Default = "Nametag",
 		TextDisappear = false,
@@ -7218,7 +6272,7 @@ local KickPlayerFirework
 		end	  
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = " Auto Change Nametag",
 		Default = false,
 		Callback = function(Value)
@@ -7240,7 +6294,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddDropdown({
+	Misc:AddDropdown({
 		Name = "Tycoon Auto",
 		Default = "All",
 		Options = {"All","Your"},
@@ -7249,7 +6303,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Auto Click Tycoon",
 		Default = false,
 		Callback = function(Value)
@@ -7287,7 +6341,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab7:AddToggle({
+	Misc:AddToggle({
 		Name = "Auto Destroy Tycoon",
 		Default = false,
 		Callback = function(Value)
@@ -7320,7 +6374,7 @@ local KickPlayerFirework
 		local NoChanged = Instance.new("BoolValue", workspace)
 		NoChanged.Name = "NoChanged"
 	end
-	Tab2:AddToggle({
+	Anti:AddToggle({
 		Name = "All Toggle Anti",
 		Default = false,
 		Callback = function(Value)
@@ -7331,7 +6385,7 @@ local KickPlayerFirework
 	if getgenv().AntiVoidChoose == nil then
 		getgenv().AntiVoidChoose = "Normal"
 	end
-	Tab2:AddDropdown({
+	Anti:AddDropdown({
 		Name = "Anti Void",
 		Default = "Normal",
 		Options = {"Normal","Retro","Water","Psycho","Bob"},
@@ -7348,7 +6402,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab2:AddSlider({
+	Anti:AddSlider({
 		Name = "Transparency Anti Void",
 		Min = 0,
 		Max = 1,
@@ -7381,7 +6435,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiVoid = Tab2:AddToggle({
+	AntiVoid = Anti:AddToggle({
 		Name = "Anti Void",
 		Default = false,
 		Callback = function(Value)
@@ -7446,7 +6500,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiPortal = Tab2:AddToggle({
+	AntiPortal = Anti:AddToggle({
 		Name = "Anti Portal",
 		Default = false,
 		Callback = function(Value)
@@ -7471,7 +6525,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiAdmin = Tab2:AddToggle({
+	AntiAdmin = Anti:AddToggle({
 		Name = "Anti Mod | Admin",
 		Default = false,
 		Callback = function(Value)
@@ -7489,7 +6543,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiKick = Tab2:AddToggle({
+	AntiKick = Anti:AddToggle({
 		Name = "Anti Kick",
 		Default = false,
 		Callback = function(Value)
@@ -7505,7 +6559,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiAfk = Tab2:AddToggle({
+	AntiAfk = Anti:AddToggle({
 		Name = "Anti Afk",
 		Default = false,
 		Callback = function(Value)
@@ -7520,7 +6574,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiObby = Tab2:AddToggle({
+	AntiObby = Anti:AddToggle({
 		Name = "Anti Obby",
 		Default = false,
 		Callback = function(Value)
@@ -7547,7 +6601,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiRock = Tab2:AddToggle({
+	AntiRock = Anti:AddToggle({
 		Name = "Anti Megarock | Custom",
 		Default = false,
 		Callback = function(Value)
@@ -7564,7 +6618,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiSbeve = Tab2:AddToggle({
+	AntiSbeve = Anti:AddToggle({
 		Name = "Anti Sbeve",
 		Default = false,
 		Callback = function(Value)
@@ -7582,7 +6636,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiBallBaller = Tab2:AddToggle({
+	AntiBallBaller = Anti:AddToggle({
 		Name = "Anti Ball Baller",
 		Default = false,
 		Callback = function(Value)
@@ -7599,7 +6653,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiBus = Tab2:AddToggle({
+	AntiBus = Anti:AddToggle({
 		Name = "Anti Bus",
 		Default = false,
 		Callback = function(Value)
@@ -7615,7 +6669,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiLure = Tab2:AddToggle({
+	AntiLure = Anti:AddToggle({
 		Name = "Anti Lure",
 		Default = false,
 		Callback = function(Value)
@@ -7632,7 +6686,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiMail = Tab2:AddToggle({
+	AntiMail = Anti:AddToggle({
 		Name = "Anti Mail",
 		Default = false,
 		Callback = function(Value)
@@ -7647,7 +6701,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiMittenBl = Tab2:AddToggle({
+	AntiMittenBl = Anti:AddToggle({
 		Name = "Anti Mitten Blind",
 		Default = false,
 		Callback = function(Value)
@@ -7661,7 +6715,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiKnock = Tab2:AddToggle({
+	AntiKnock = Anti:AddToggle({
 		Name = "Anti Knockoff",
 		Default = false,
 		Callback = function(Value)
@@ -7675,7 +6729,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiJack = Tab2:AddToggle({
+	AntiJack = Anti:AddToggle({
 		Name = "Anti Hallow - Jack",
 		Default = false,
 		Callback = function(Value)
@@ -7683,7 +6737,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiBooster = Tab2:AddToggle({
+	AntiBooster = Anti:AddToggle({
 		Name = "Anti Booster",
 		Default = false,
 		Callback = function(Value)
@@ -7699,7 +6753,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiSquid = Tab2:AddToggle({
+	AntiSquid = Anti:AddToggle({
 		Name = "Anti Squid",
 		Default = false,
 		Callback = function(Value)
@@ -7716,7 +6770,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiConveyor = Tab2:AddToggle({
+	AntiConveyor = Anti:AddToggle({
 		Name = "Anti Conveyor",
 		Default = false,
 		Callback = function(Value)
@@ -7724,7 +6778,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiNightmareAndPotion = Tab2:AddToggle({
+	AntiNightmareAndPotion = Anti:AddToggle({
 		Name = "Anti Nightmare & Potion",
 		Default = false,
 		Callback = function(Value)
@@ -7736,7 +6790,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiIceAndPotion = Tab2:AddToggle({
+	AntiIceAndPotion = Anti:AddToggle({
 		Name = "Anti Ice & Potion",
 		Default = false,
 		Callback = function(Value)
@@ -7754,7 +6808,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiTime = Tab2:AddToggle({
+	AntiTime = Anti:AddToggle({
 		Name = "Anti Time Stop & Stop",
 		Default = false,
 		Callback = function(Value)
@@ -7770,7 +6824,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiNull = Tab2:AddToggle({
+	AntiNull = Anti:AddToggle({
 		Name = "Anti Null",
 		Default = false,
 		Callback = function(Value)
@@ -7786,7 +6840,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiRun = Tab2:AddToggle({
+	AntiRun = Anti:AddToggle({
 		Name = "Anti Run",
 		Default = false,
 		Callback = function(Value)
@@ -7809,7 +6863,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiBrick = Tab2:AddToggle({
+	AntiBrick = Anti:AddToggle({
 		Name = "Anti Brick",
 		Default = false,
 		Callback = function(Value)
@@ -7826,7 +6880,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiRecord = Tab2:AddToggle({
+	AntiRecord = Anti:AddToggle({
 		Name = "Anti Record",
 		Default = false,
 		Callback = function(Value)
@@ -7862,7 +6916,7 @@ local KickPlayerFirework
 		end)
 	end)
 
-	AntiReda = Tab2:AddToggle({
+	AntiReda = Anti:AddToggle({
 		Name = "Anti [REDACTED]",
 		Default = false,
 		Callback = function(Value)
@@ -7870,7 +6924,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiBrazil = Tab2:AddToggle({
+	AntiBrazil = Anti:AddToggle({
 		Name = "Anti Brazil",
 		Default = false,
 		Callback = function(Value)
@@ -7893,7 +6947,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiZa = Tab2:AddToggle({
+	AntiZa = Anti:AddToggle({
 		Name = "Anti Za Hando",
 		Default = false,
 		Callback = function(Value)
@@ -7909,7 +6963,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiFort = Tab2:AddToggle({
+	AntiFort = Anti:AddToggle({
 		Name = "Anti Fort",
 		Default = false,
 		Callback = function(Value)
@@ -7925,7 +6979,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiReaper = Tab2:AddToggle({
+	AntiReaper = Anti:AddToggle({
 		Name = "Anti Reaper",
 		Default = false,
 		Callback = function(Value)
@@ -7942,7 +6996,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiPusher = Tab2:AddToggle({
+	AntiPusher = Anti:AddToggle({
 		Name = "Anti Pusher",
 		Default = false,
 		Callback = function(Value)
@@ -7958,7 +7012,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiDefend = Tab2:AddToggle({
+	AntiDefend = Anti:AddToggle({
 		Name = "Anti Defend",
 		Default = false,
 		Callback = function(Value)
@@ -7985,7 +7039,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiAttackPlank = Tab2:AddToggle({
+	AntiAttackPlank = Anti:AddToggle({
 		Name = "Anti Attack Plank",
 		Default = false,
 		Callback = function(Value)
@@ -8002,7 +7056,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiBubble = Tab2:AddToggle({
+	AntiBubble = Anti:AddToggle({
 		Name = "Anti Bubble",
 		Default = false,
 		Callback = function(Value)
@@ -8018,7 +7072,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiStun = Tab2:AddToggle({
+	AntiStun = Anti:AddToggle({
 		Name = "Anti Stun",
 		Default = false,
 		Callback = function(Value)
@@ -8032,7 +7086,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiCOD = Tab2:AddToggle({
+	AntiCOD = Anti:AddToggle({
 		Name = "Anti Cube Of Death",
 		Default = false,
 		Callback = function(Value)
@@ -8050,7 +7104,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiDeath = Tab2:AddToggle({
+	AntiDeath = Anti:AddToggle({
 		Name = "Anti Death Barriers",
 		Default = false,
 		Callback = function(Value)
@@ -8080,7 +7134,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	AntiRagdoll = Tab2:AddToggle({
+	AntiRagdoll = Anti:AddToggle({
 		Name = "Anti Ragdoll",
 		Default = false,
 		Callback = function(Value)
@@ -8103,7 +7157,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab11:AddDropdown({
+	Troll:AddDropdown({
 		Name = "Glove Sound",
 		Default = "Ghost",
 		Options = {"Ghost", "Thanos", "Space", "Scythe", "Golden", "Hitman", "Prop", "Error Death", "Zombie"},
@@ -8112,7 +7166,7 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab11:AddToggle({
+	Troll:AddToggle({
 		Name = "Auto Spam Glove Sound",
 		Default = false,
 		Callback = function(Value)
@@ -8157,28 +7211,28 @@ local KickPlayerFirework
 		end    
 	})
 
-	Tab15:AddParagraph("Share Link Zalo","Join Link Zalo Message All People Or Friend | Tham Gia Link Zalo Nhắn Tin Tất Cả Mọi Người Hoặc Bạn Bè")
-	Tab15:AddParagraph("Message Zalo","You Have To Message Zalo In VietNamese | Bạn Phải Nhắn Tin Zalo Bằng Tiếng Việt")
-	Tab15:AddParagraph("Deputy Group Zalo","[ Tấn Lộc ( Owner ) ] or [ Giang ] or [ Tiến ] or [ Hoàng Kha ]")
-	Tab15:AddParagraph("Share Link Slap Battles Group","Join Link Zalo Message All People Or Friend | Tham Gia Link Zalo Nhắn Tin Tất Cả Mọi Người Hoặc Bạn Bè")
-	Tab15:AddParagraph("Message Slap Battles Group","You Have To Message Zalo In VietNamese Or English | Bạn Phải Nhắn Tin Zalo Bằng Tiếng Việt hoặc Tiếng Anh")
-	Tab15:AddLabel("Owner Credits Script By Giang")
+	Credits:AddParagraph("Share Link Zalo","Join Link Zalo Message All People Or Friend | Tham Gia Link Zalo Nhắn Tin Tất Cả Mọi Người Hoặc Bạn Bè")
+	Credits:AddParagraph("Message Zalo","You Have To Message Zalo In VietNamese | Bạn Phải Nhắn Tin Zalo Bằng Tiếng Việt")
+	Credits:AddParagraph("Deputy Group Zalo","[ Tấn Lộc ( Owner ) ] or [ Giang ] or [ Tiến ] or [ Hoàng Kha ]")
+	Credits:AddParagraph("Share Link Slap Battles Group","Join Link Zalo Message All People Or Friend | Tham Gia Link Zalo Nhắn Tin Tất Cả Mọi Người Hoặc Bạn Bè")
+	Credits:AddParagraph("Message Slap Battles Group","You Have To Message Zalo In VietNamese Or English | Bạn Phải Nhắn Tin Zalo Bằng Tiếng Việt hoặc Tiếng Anh")
+	Credits:AddLabel("Owner Credits Script By Giang")
 
-	Tab15:AddButton({
+	Credits:AddButton({
 		Name = "Copy Join Zalo",
 		Callback = function()
 			setclipboard("https://zalo.me/g/qlukiy407")
 		end    
 	})
 
-	Tab15:AddButton({
+	Credits:AddButton({
 		Name = "Copy Join Slap Battles Group",
 		Callback = function()
 			setclipboard("https://discord.com/invite/xdCKBcS6")
 		end    
 	})
 
-	Tab15:AddButton({
+	Credits:AddButton({
 		Name = "[ Destroy GUI ] [ Toggle Gui ]",
 		Callback = function()
 			getgenv().AutoSetInfo = false
@@ -8341,6 +7395,413 @@ local KickPlayerFirework
 	game.Workspace.NoChanged.Changed:Connect(function()
 		AntiRagdoll:Set(game.Workspace.NoChanged.Value)
 	end)
+	
+	do
+		---SafeSpotBox---
+
+		if workspace:FindFirstChild("SafeBox") == nil then
+			local S = Instance.new("Part")
+			S.Name = "SafeBox"
+			S.Anchored = true
+			S.CanCollide = true
+			S.Transparency = .5
+			S.Position = Vector3.new(-5500, -5000, -5000)
+			S.Size = Vector3.new(21, 5, 21)
+			S.Parent = workspace
+
+			local S1 = Instance.new("Part")
+			S1.Name = "S1"
+			S1.Anchored = true
+			S1.CanCollide = true
+			S1.Transparency = .5
+			S1.Position = Vector3.new(-5499.91, -4991.5, -4989.09)
+			S1.Size = Vector3.new(20, 13, 2)
+			S1.Parent = workspace:FindFirstChild("SafeBox")
+
+			local S2 = Instance.new("Part")
+			S2.Name = "S2"
+			S2.Anchored = true
+			S2.CanCollide = true
+			S2.Transparency = .5
+			S2.Position = Vector3.new(-5510.27979, -4991.5, -5000.08984, -4.47034836e-07, 0, 0.999999881, 0, 1, 0, -0.999999881, 0, -3.69319451e-07)
+			S2.Size = Vector3.new(21, 14, 2)
+			S2.Rotation = Vector3.new(0, -90, 0)
+			S2.Parent = workspace:FindFirstChild("SafeBox")
+
+			local S3 = Instance.new("Part")
+			S3.Name = "S3"
+			S3.Anchored = true
+			S3.CanCollide = true
+			S3.Transparency = .5
+			S3.Position = Vector3.new(-5499.3, -4991.5, -5011.12)
+			S3.Size = Vector3.new(21, 13, 2)
+			S3.Parent = workspace:FindFirstChild("SafeBox")
+
+			local S4 = Instance.new("Part")
+			S4.Name = "S4"
+			S4.Anchored = true
+			S4.CanCollide = true
+			S4.Transparency = .5
+			S4.Position = Vector3.new(-5489.97559, -4991.5, -4999.52637, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08)
+			S4.Size = Vector3.new(22, 13, 2)
+			S4.Rotation = Vector3.new(0, -90, 0)
+			S4.Parent = workspace:FindFirstChild("SafeBox")
+
+			local S5 = Instance.new("Part")
+			S5.Name = "S5"
+			S5.Anchored = true
+			S5.CanCollide = true
+			S5.Transparency = .5
+			S5.Position = Vector3.new(-5499.39, -4984, -5000.07)
+			S5.Size = Vector3.new(24, 3, 24)
+			S5.Parent = workspace:FindFirstChild("SafeBox")
+		end
+
+		---Bed---
+
+		if workspace:FindFirstChild("Bed") == nil then
+			local Bed = Instance.new("Part")
+			Bed.Name = "Bed"
+			Bed.Anchored = true
+			Bed.Position = Vector3.new(-100019.5, 104, -1500)
+			Bed.Size = Vector3.new(0.01, 0.01, 10)
+			Bed.Parent = workspace
+
+			local B1 = Instance.new("Part")
+			B1.Name = "Bed1"
+			B1.Anchored = true
+			B1.Position = Vector3.new(-100025, 104, -1500)
+			B1.Size = Vector3.new(1, 6, 7)
+			B1.BrickColor = BrickColor.new("Burnt Sienna")
+			B1.Parent = workspace:FindFirstChild("Bed")
+
+			local B2 = Instance.new("Part")
+			B2.Name = "Bed2"
+			B2.Anchored = true
+			B2.Position = Vector3.new(-100023, 104.5, -1500)
+			B2.Size = Vector3.new(2, 1, 6)
+			B2.BrickColor = BrickColor.new("Mid gray")
+			B2.Parent = workspace:FindFirstChild("Bed")
+
+			local B3 = Instance.new("Part")
+			B3.Name = "Bed3"
+			B3.Anchored = true
+			B3.Position = Vector3.new(-100019, 104, -1500)
+			B3.Size = Vector3.new(11, 1, 7)
+			B3.BrickColor = BrickColor.new("Crimson")
+			B3.Parent = workspace:FindFirstChild("Bed")
+
+			local B4 = Instance.new("Part")
+			B4.Name = "Bed4"
+			B4.Anchored = true
+			B4.Position = Vector3.new(-100013, 104, -1500)
+			B4.Size = Vector3.new(1, 6, 7)
+			B4.BrickColor = BrickColor.new("Burnt Sienna")
+			B4.Parent = workspace:FindFirstChild("Bed")
+
+			local B5 = Instance.new("Part")
+			B5.Name = "Bed5"
+			B5.Anchored = true
+			B5.Position = Vector3.new(-100019, 103, -1500)
+			B5.Size = Vector3.new(11, 1, 7)
+			B5.BrickColor = BrickColor.new("Dark orange")
+			B5.Parent = workspace:FindFirstChild("Bed")
+		end
+
+		---SafeSpot---
+
+		if workspace:FindFirstChild("Safespot") == nil then
+			local Safespot = Instance.new("Part",workspace)
+			Safespot.Name = "Safespot"
+			Safespot.Position = Vector3.new(10000,-50,10000)
+			Safespot.Size = Vector3.new(500,10,500)
+			Safespot.Anchored = true
+			Safespot.CanCollide = true
+			Safespot.Transparency = .5
+
+			local Safespot1 = Instance.new("Part",workspace)
+			Safespot1.Name = "DefendPart"
+			Safespot1.Position = Vector3.new(10000.2, 13, 9752.45)
+			Safespot1.Size = Vector3.new(500, 117, 5)
+			Safespot1.Anchored = true
+			Safespot1.CanCollide = true
+			Safespot1.Transparency = .5
+			Safespot1.Parent = game.workspace.Safespot
+
+			local Safespot2 = Instance.new("Part",workspace)
+			Safespot2.Name = "DefendPart1"
+			Safespot2.Position = Vector3.new(10248.2, 13, 10002.4)
+			Safespot2.Size = Vector3.new(5, 117, 496)
+			Safespot2.Anchored = true
+			Safespot2.CanCollide = true
+			Safespot2.Transparency = .5
+			Safespot2.Parent = game.workspace.Safespot
+
+			local Safespot3 = Instance.new("Part",workspace)
+			Safespot3.Name = "DefendPart2"
+			Safespot3.Position = Vector3.new(9998.13, 13, 10247.2)
+			Safespot3.Size = Vector3.new(497, 117, 6)
+			Safespot3.Anchored = true
+			Safespot3.CanCollide = true
+			Safespot3.Transparency = .5
+			Safespot3.Parent = game.workspace.Safespot
+
+			local Safespot4 = Instance.new("Part",workspace)
+			Safespot4.Name = "DefendPart3"
+			Safespot4.Position = Vector3.new(9752.71, 13, 9999.28)
+			Safespot4.Size = Vector3.new(7, 117, 490)
+			Safespot4.Anchored = true
+			Safespot4.CanCollide = true
+			Safespot4.Transparency = .5
+			Safespot4.Parent = game.workspace.Safespot
+
+			local Safespot5 = Instance.new("Part",workspace)
+			Safespot5.Name = "DefendPart4"
+			Safespot5.Position = Vector3.new(10001.1, 76, 9999.66)
+			Safespot5.Size = Vector3.new(491, 10, 491)
+			Safespot5.Anchored = true
+			Safespot5.CanCollide = true
+			Safespot5.Transparency = .5
+			Safespot5.Parent = game.workspace.Safespot
+		end
+
+		---AntiVoidBadge---
+
+		if workspace:FindFirstChild("Psycho") == nil then
+			local Psycho = Instance.new("Part", workspace)
+			Psycho.Position = Vector3.new(17800.9082, 2947, -226.017517, -0.248515129, 0.00487846136, -0.968615651, 0.966844261, -0.0594091415, -0.248359889, -0.0587562323, -0.998221755, 0.0100474358)
+			Psycho.Name = "Psycho"
+			Psycho.Size = Vector3.new(2000, 1, 2000)
+			Psycho.Material = "ForceField"
+			Psycho.Anchored = true
+			Psycho.Transparency = 1
+			Psycho.CanCollide = false
+
+			local Kraken = Instance.new("Part", Psycho)
+			Kraken.Position = Vector3.new(221, 29, -12632)
+			Kraken.Name = "Kraken"
+			Kraken.Size = Vector3.new(2000, 1, 2000)
+			Kraken.Material = "ForceField"
+			Kraken.Anchored = true
+			Kraken.Transparency = 1
+			Kraken.CanCollide = false
+
+			local Retro1 = Instance.new("Part", Psycho)
+			Retro1.Position = Vector3.new(-16643.62890625, 770.0464477539062, 4707.8193359375)
+			Retro1.Name = "Retro1"
+			Retro1.Size = Vector3.new(2000, 1, 2000)
+			Retro1.Material = "ForceField"
+			Retro1.Anchored = true
+			Retro1.Transparency = 1
+			Retro1.CanCollide = false
+
+			local Retro2 = Instance.new("Part", Retro1)
+			Retro2.Position = Vector3.new(-16862.791015625, -7.879573822021484, 4791.55517578125)
+			Retro2.Name = "Retro2"
+			Retro2.Size = Vector3.new(2000, 1, 2000)
+			Retro2.Material = "ForceField"
+			Retro2.Anchored = true
+			Retro2.Transparency = 1
+			Retro2.CanCollide = false
+
+			local Retro3 = Instance.new("Part", Retro1)
+			Retro3.Position = Vector3.new(-28023.3046875, -219.92381286621094, 4906.6015625)
+			Retro3.Name = "Retro3"
+			Retro3.Size = Vector3.new(2000, 1, 2000)
+			Retro3.Material = "ForceField"
+			Retro3.Anchored = true
+			Retro3.Transparency = 1
+			Retro3.CanCollide = false
+		end
+
+		---Anti Void---
+
+		if workspace:FindFirstChild("BobWalk1") == nil then
+			local BobWalk1 = Instance.new("Part", workspace)
+			BobWalk1.CanCollide = false
+			BobWalk1.Anchored = true
+			BobWalk1.CFrame = CFrame.new(23.2798462, -19.8447475, 1.83554196, -1, 0, 0, 0, -1, 0, 0, 0, 1)
+			BobWalk1.Size = Vector3.new(1139.2593994140625, 1.5, 2048)
+			BobWalk1.Name = "BobWalk1"
+			BobWalk1.Transparency = 1
+
+			local BobWalk2 = Instance.new("Part", BobWalk1)
+			BobWalk2.CanCollide = false
+			BobWalk2.Anchored = true
+			BobWalk2.CFrame = CFrame.new(-458.458344, -9.25, 1.83554196, -1, 0, 0, 0, -1, 0, 0, 0, 1)
+			BobWalk2.Size = Vector3.new(1139.2593994140625, 1.5, 2048)
+			BobWalk2.Name = "BobWalk2"
+			BobWalk2.Transparency = 1
+
+			local BobWalk3 = Instance.new("Part", BobWalk1)
+			BobWalk3.CanCollide = false
+			BobWalk3.Anchored = true
+			BobWalk3.CFrame = CFrame.new(-690.65979, 47.25, 1.83554196, -1, 0, 0, 0, -1, 0, 0, 0, 1)
+			BobWalk3.Size = Vector3.new(674.8563232421875, 0.6048492789268494, 2048)
+			BobWalk3.Name = "BobWalk3"
+			BobWalk3.Transparency = 1
+
+			local BobWalk4 = Instance.new("Part", BobWalk1)
+			BobWalk4.CanCollide = false
+			BobWalk4.Anchored = true
+			BobWalk4.CFrame = CFrame.new(402.964996, 29.25, 222.310089, -1, 0, 0, 0, -1, 0, 0, 0, 1)
+			BobWalk4.Size = Vector3.new(379.88922119140625, 1.5, 160.8837127685547)
+			BobWalk4.Name = "BobWalk4"
+			BobWalk4.Transparency = 1
+
+			local BobWalk5 = Instance.new("Part", BobWalk1)
+			BobWalk5.CanCollide = false
+			BobWalk5.Anchored = true
+			BobWalk5.Orientation = Vector3.new(0, 0, 171.728)
+			BobWalk5.CFrame = CFrame.new(178.719162, -18.9417267, 1.83554196, -0.989596844, -0.143868446, 0, 0.143868446, -0.989596844, 0, 0, 0, 1)
+			BobWalk5.Size = Vector3.new(143.94830322265625, 1.5, 2048)
+			BobWalk5.Name = "BobWalk5"
+			BobWalk5.Transparency= 1
+
+			local BobWalk6 = Instance.new("Part", BobWalk1)
+			BobWalk6.CanCollide = false
+			BobWalk6.Anchored = true
+			BobWalk6.Orientation = Vector3.new(0, 0, 144.782)
+			BobWalk6.CFrame = CFrame.new(-309.152832, 15.4761791, 1.83554196, -0.816968799, -0.576681912, 0, 0.576681912, -0.816968799, 0, 0, 0, 1)
+			BobWalk6.Size = Vector3.new(110.13511657714844, 2.740000009536743, 2048)
+			BobWalk6.Name = "BobWalk6"
+			BobWalk6.Transparency = 1
+
+			local BobWalk7 = Instance.new("Part", BobWalk1)
+			BobWalk7.CanCollide = false
+			BobWalk7.Anchored = true
+			BobWalk7.Orientation = Vector3.new(0, 0, -147.002)
+			BobWalk7.CFrame = CFrame.new(174.971924, 5.34897423, 222.310089, -0.838688731, 0.544611216, 0, -0.544611216, -0.838688731, 0, 0, 0, 1)
+			BobWalk7.Size = Vector3.new(89.76103210449219, 1.5, 160.8837127685547)
+			BobWalk7.Name = "BobWalk7"
+			BobWalk7.Transparency = 1
+
+			local BobWalk8 = Instance.new("Part", BobWalk1)
+			BobWalk8.CanCollide = false
+			BobWalk8.Anchored = true
+			BobWalk8.Orientation = Vector3.new(0.001, -90.002, -138.076)
+			BobWalk8.CFrame = CFrame.new(402.965027, 5.49165154, 74.8157959, 2.98023224e-05, -1.14142895e-05, -1, -0.668144584, -0.744031429, -1.14142895e-05, -0.744031489, 0.668144584, -2.98023224e-05)
+			BobWalk8.Size = Vector3.new(74.23055267333984, 1, 379.88922119140625)
+			BobWalk8.Name = "BobWalk8"
+			BobWalk8.Transparency = 1
+
+			local BobWalk9 = Instance.new("Part", BobWalk1)
+			BobWalk9.CanCollide = false
+			BobWalk9.Anchored = true
+			BobWalk9.CFrame = CFrame.new(402.964996, 29.9136467, 121.981705, -1, 0, 0, 0, -1, 0, 0, 0, 1)
+			BobWalk9.Size = Vector3.new(379.88922119140625, 1.5, 39.77305603027344)
+			BobWalk9.Name = "BobWalk9"
+			BobWalk9.Transparency = 1
+
+			local BobWalk10 = Instance.new("WedgePart", BobWalk1)
+			BobWalk10.CanCollide = false
+			BobWalk10.Anchored = true
+			BobWalk10.Orientation = Vector3.new(-30.453, 117.775, -102.906)
+			BobWalk10.CFrame = CFrame.new(134.084229, -17.8583984, 94.3953705, 0.541196942, -0.354067981, 0.762719929, -0.840263784, -0.192543149, 0.506837189, -0.0325982571, -0.915184677, -0.401714325)
+			BobWalk10.Size = Vector3.new(1, 88.66793823242188, 34.42972946166992)
+			BobWalk10.Name = "BobWalk10"
+			BobWalk10.Transparency = 1
+
+			local BobWalk11 = Instance.new("WedgePart", BobWalk1)
+			BobWalk11.CanCollide = false
+			BobWalk11.Anchored = true
+			BobWalk11.Orientation = Vector3.new(-29.779, 117.596, -13.193)
+			BobWalk11.CFrame = CFrame.new(168.441879, 2.46393585, 125.815231, -0.350553155, -0.534268022, 0.769201458, -0.198098332, 0.845035911, 0.496660322, -0.915352523, 0.0217281878, -0.402067661)
+			BobWalk11.Size = Vector3.new(1, 0.9999924302101135, 82.1865463256836)
+			BobWalk11.Name = "BobWalk11"
+			BobWalk11.Transparency = 1
+
+			local BobWalk12 = Instance.new("WedgePart", BobWalk1)
+			BobWalk12.CanCollide = false
+			BobWalk12.Anchored = true
+			BobWalk12.Orientation = Vector3.new(26.893, -124.388, -108.64)
+			BobWalk12.CFrame = CFrame.new(206.315063, 26.9295502, 105.471031, 0.534210563, -0.415855825, -0.73599112, -0.845072925, -0.285055399, -0.452321947, -0.021697551, 0.863601387, -0.503708005)
+			BobWalk12.Size = Vector3.new(1, 13.53612232208252, 9.847718238830566)
+			BobWalk12.Name = "BobWalk12"
+			BobWalk12.Transparency = 1
+
+			local BobWalk13 = Instance.new("WedgePart", BobWalk1)
+			BobWalk13.CanCollide = false
+			BobWalk13.Anchored = true
+			BobWalk13.Orientation = Vector3.new(-26.893, 55.613, 108.64)
+			BobWalk13.CFrame = CFrame.new(165.965088, 2.12955856, 77.8575592, -0.53421092, -0.415855944, 0.735991359, 0.845073164, -0.285055757, 0.452322066, 0.0216975808, 0.863601625, 0.503708005)
+			BobWalk13.Size = Vector3.new(1, 13.53612232208252, 99.8001480102539)
+			BobWalk13.Name = "BobWalk13"
+			BobWalk13.Transparency = 1
+
+			local BobWalk14 = Instance.new("WedgePart", BobWalk1)
+			BobWalk14.CanCollide = false
+			BobWalk14.Anchored = true
+			BobWalk14.Orientation = Vector3.new(-0.001, 90.003, 48.072)
+			BobWalk14.CFrame = CFrame.new(172.67041, 5.49164963, 74.8157959, -4.58955765e-05, 2.05039978e-05, 1, 0.743987858, 0.668193102, 2.05039978e-05, -0.668193102, 0.743987858, -4.58955765e-05)
+			BobWalk14.Size = Vector3.new(1, 74.23055267333984, 80.699951171875)
+			BobWalk14.Name = "BobWalk14"
+			BobWalk14.Transparency = 1
+
+			local BobWalk15 = Instance.new("WedgePart", BobWalk1)
+			BobWalk15.CanCollide = false
+			BobWalk15.Anchored = true
+			BobWalk15.Orientation = Vector3.new(0, 0, 106.498)
+			BobWalk15.CFrame = CFrame.new(212.753906, 30.0632439, 121.981705, -0.283976078, -0.95883137, 0, 0.95883137, -0.283976078, 0, 0, 0, 1)
+			BobWalk15.Size = Vector3.new(1, 0.8520558476448059, 39.773048400878906)
+			BobWalk15.Name = "BobWalk15"
+			BobWalk15.Transparency = 1
+
+			local BobWalk16 = Instance.new("WedgePart", BobWalk1)
+			BobWalk16.CanCollide = false
+			BobWalk16.Anchored = true
+			BobWalk16.Orientation = Vector3.new(29.777, -62.406, -75.066)
+			BobWalk16.CFrame = CFrame.new(212.884216, 30.1233234, 121.984734, 0.544644356, 0.33412537, -0.769235253, -0.838644743, 0.223680317, -0.496630788, 0.00612583756, 0.915602207, 0.402038693)
+			BobWalk16.Size = Vector3.new(1, 36.08900451660156, 16.739320755004883)
+			BobWalk16.Name = "BobWalk16"
+			BobWalk16.Transparency = 1
+
+			local BobWalk17 = Instance.new("WedgePart", BobWalk1)
+			BobWalk17.CanCollide = false
+			BobWalk17.Anchored = true
+			BobWalk17.Orientation = Vector3.new(-29.777, 117.594, 75.066)
+			BobWalk17.CFrame = CFrame.new(174.83577, 5.55865097, 141.871262, -0.544644356, 0.33412537, 0.769235253, 0.838644743, 0.223680317, 0.496630788, -0.00612583756, 0.915602207, -0.402038693)
+			BobWalk17.Size = Vector3.new(1, 36.08900451660156, 82.1865463256836)
+			BobWalk17.Name = "BobWalk17"
+			BobWalk17.Transparency = 1
+
+			local BobWalk18 = Instance.new("WedgePart", BobWalk1)
+			BobWalk18.CanCollide = false
+			BobWalk18.Anchored = true
+			BobWalk18.Orientation = Vector3.new(30.453, -62.225, 102.906)
+			BobWalk18.CFrame = CFrame.new(165.427338, 2.97219658, 77.884697, -0.541196942, -0.354067981, -0.762719929, 0.840263784, -0.192543149, -0.506837189, 0.0325982571, -0.915184677, 0.401714325)
+			BobWalk18.Size = Vector3.new(1, 88.66793823242188, 47.76289749145508)
+			BobWalk18.Name = "BobWalk18"
+			BobWalk18.Transparency = 1
+		end
+
+		if workspace:FindFirstChild("VoidPart") == nil then
+			local VoidPart = Instance.new("Part", workspace)
+			VoidPart.Position = Vector3.new(-80.5, -10.005, -246.5)
+			VoidPart.Name = "VoidPart"
+			VoidPart.Size = Vector3.new(2048, 1, 2048)
+			VoidPart.Material = "ForceField"
+			VoidPart.Anchored = true
+			VoidPart.Transparency = 1
+			VoidPart.CanCollide = false
+
+			local VoidPart1 = Instance.new("Part", VoidPart)
+			VoidPart1.Position = Vector3.new(0,-50026.5,0)
+			VoidPart1.Name = "VoidPart1"
+			VoidPart1.Size = Vector3.new(2048,70,2048)
+			VoidPart1.Anchored = true
+			VoidPart1.Transparency = 1
+			VoidPart1.CanCollide = false
+
+			local TournamentAntiVoid = Instance.new("Part", VoidPart)
+			TournamentAntiVoid.Name = "TAntiVoid"
+			TournamentAntiVoid.Size = Vector3.new(2048, 15, 2048)
+			TournamentAntiVoid.Position = Vector3.new(3450, 59.009, 68)
+			TournamentAntiVoid.Anchored = true
+			TournamentAntiVoid.Transparency = 1
+			TournamentAntiVoid.CanCollide = false
+		end
+	end
 end
 
 
@@ -8354,9 +7815,6 @@ if gethui():FindFirstChild("Orion") then
 				end
 			end
 		end
-	end
-	if AutoSetInfo then
-		AutoSetInfo:Set(true)
 	end
 end
 ------------------------------------------------------------------------
