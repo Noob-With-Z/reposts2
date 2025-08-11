@@ -606,7 +606,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	end
 	CheckSlap = Info:AddLabel("Slaps You Have: [ "..GetSlaps().." ]")
 	Glove = Info:AddLabel("You're Using Glove: [ "..GetEquippedGlove().." ]")
-	PlateTime = Info:AddLabel("Plate Time: [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
+	PlateTime = Info:AddLabel("Plate Time: [ "..plr.PlayerGui:WaitForChild("PlateIndicator"):FindFirstChild("TextLabel").Text.." ]")
 	Info:AddParagraph("Game ID: [ "..game.PlaceId.." ]","Job ID: [ "..game.JobId.." ]")
 	local InfoServer = Info:AddSection({Name = "Local Player"})
 	if char:FindFirstChild("rock") then
@@ -624,13 +624,18 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	PositionYou = Info:AddLabel("Position In Your [ "..tostring(math.round(char.HumanoidRootPart.Position.X)..", ".. math.round(char.HumanoidRootPart.Position.Y)..", "..math.round(char.HumanoidRootPart.Position.Z)).." ]")
 
 	game:GetService("RunService").RenderStepped:Connect(function()
+		
+		local servertime = game.Workspace:WaitForChild("Lobby"):WaitForChild("ServerAge"):FindFirstChild("Text"):FindFirstChild("SurfaceGui"):FindFirstChild("TextLabel").Text
+		local OnlyTheNumbersInTheText = servertime:gsub("%D+", "")
+		local Time = tonumber(OnlyTheNumbersInTheText)
+		
 		CanYouFps:Set("Your Fps: [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
 		CanYouPing:Set("Your Ping: [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
 		ServerPlayer:Set("Player In Server: [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
-		TimeServer:Set("Server Time: [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minute | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
+		TimeServer:Set("Time In Server (Time Playing): [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minute | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
 		TimeNow:Set("Now Time: [ "..os.date("%X").." ]")
 		AgeAccYou:Set("Your Account Age: [ "..plr.AccountAge.." ]")
-		ViewAgeServer:Set("Server Age: [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
+		ViewAgeServer:Set("Server Age: [ " .. Time .. " ]")
 		CodeKeypad:Set("Elude Code Keypad: [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
 		if not game.Workspace:FindFirstChild("Keypad") then
 			KeypadSpawn:Set("Keypad Spawned: [ No ]")
