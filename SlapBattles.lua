@@ -1041,11 +1041,12 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 
 
 function GetEquippedGlove()
-	return plr:WaitForChild("leaderstats"):FindFirstChild("Glove").Value
+	return plr:FindFirstChild("leaderstats"):FindFirstChild("Glove").Value
 end
 
 function GetSlaps()
-	return plr:WaitForChild("leaderstats"):FindFirstChild("Slaps").Value
+	print("Slaps: "..plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value)
+	return plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value
 end
 
 	Badges:AddButton({
