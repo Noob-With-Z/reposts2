@@ -28,8 +28,6 @@ Legend:
      |_ [/] Enhanced glove name recognition:
          |_ Now supports lower/uppercase and spacing variations.
          |_ e.g.: "zahando", "ZaHando", "za hando", "Za Hando", "zAhAnDo", etc.
-
- (I think i've fixed the Slap Farm System 🙌)
 ]]
 --[[
 -- // Temporary For Studio \\ --
@@ -583,38 +581,33 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 
 	Info:AddParagraph("Zalo | Discord"," [ Zalo ]: Bạn muốn vào nhóm Zalo thì vào Credit nhé có link nhóm Zalo đó | [ Discord ]: If you want to join the Server hack slap battles group, go to the credits section ] | Good Luck")
 	local InfoServer = Info:AddSection({Name = "Info Server"})
-	CanYouFps = Info:AddLabel("Your Fps [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
-	CanYouPing = Info:AddLabel("Your Ping [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
-	ServerPlayer = Info:AddLabel("Player In Server [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
-	TimeServer = Info:AddLabel("Server Time [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minute | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
-	TimeNow = Info:AddLabel("Now Time [ "..os.date("%X").." ]")
-	AgeAccYou = Info:AddLabel("You Account Age [ "..plr.AccountAge.." ]")
-	ViewAgeServer = Info:AddLabel("Server's Age [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
-	if char.Humanoid.Health == 0 then
-		ResetTime = Info:AddLabel("Time Spawn [ "..Players.RespawnTime.." ]")
-	else
-		ResetTime = Info:AddLabel("Time Spawn [ Not Dead ]")
-	end
+	CanYouFps = Info:AddLabel("Your Fps: [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
+	CanYouPing = Info:AddLabel("Your Ping: [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
+	ServerPlayer = Info:AddLabel("Player In Server: [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
+	TimeServer = Info:AddLabel("Server Time: [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minute | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
+	TimeNow = Info:AddLabel("Now Time: [ "..os.date("%X").." ]")
+	AgeAccYou = Info:AddLabel("Your Account Age: [ "..plr.AccountAge.." ]")
+	ViewAgeServer = Info:AddLabel("Server Age: [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
 	CodeKeypad = Info:AddLabel("Code Keypad [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
 	if not game.Workspace:FindFirstChild("Keypad") then
-		KeypadSpawn = Info:AddLabel("Keypad Spawn [ No ]")
+		KeypadSpawn = Info:AddLabel("Keypad Spawned: [ No ]")
 	else
-		KeypadSpawn = Info:AddLabel("Keypad Spawn [ Yes ]")
+		KeypadSpawn = Info:AddLabel("Keypad Spawned: [ Yes ]")
 	end
 	if not game.Workspace:FindFirstChild("Toolbox") then
-		ToolboxSpawn = Info:AddLabel("Player Spawn Toolbox [ No ]")
+		ToolboxSpawn = Info:AddLabel("Are Toolbox Spawned: [ No ]")
 	else
-		ToolboxSpawn = Info:AddLabel("Player Spawn Toolbox [ Yes ]")
+		ToolboxSpawn = Info:AddLabel("Are Toolbox Spawned: [ Yes ]")
 	end
 	if not game.Workspace:FindFirstChild("SiphonOrb") then
-		SiphonOrbSpawn = Info:AddLabel("Spawn Siphon Orb [ No ]")
+		SiphonOrbSpawn = Info:AddLabel("Spawned Siphon Orb: [ No ]")
 	else
-		SiphonOrbSpawn = Info:AddLabel("Spawn Siphon Orb [ Yes ]")
+		SiphonOrbSpawn = Info:AddLabel("Spawned Siphon Orb: [ Yes ]")
 	end
-	CheckSlap = Info:AddLabel("Check Slap [ "..GetSlaps().." ]")
-	Glove = Info:AddLabel("You're Using Glove [ "..GetEquippedGlove().." ]")
-	PlateTime = Info:AddLabel("Plate Time [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
-	Info:AddParagraph("Game's ID [ "..game.PlaceId.." ]","Server ID [ "..game.JobId.." ]")
+	CheckSlap = Info:AddLabel("Slaps You Have: [ "..GetSlaps().." ]")
+	Glove = Info:AddLabel("You're Using Glove: [ "..GetEquippedGlove().." ]")
+	PlateTime = Info:AddLabel("Plate Time: [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
+	Info:AddParagraph("Game ID: [ "..game.PlaceId.." ]","Job ID: [ "..game.JobId.." ]")
 	local InfoServer = Info:AddSection({Name = "Local Player"})
 	if char:FindFirstChild("rock") then
 		WalkspeedYou = Info:AddLabel("Walk Speed [ Not Walk then rock ]")
@@ -630,65 +623,47 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	GravityYou = Info:AddLabel("Gravity [ "..game.Workspace.Gravity.." ]")
 	PositionYou = Info:AddLabel("Position In Your [ "..tostring(math.round(char.HumanoidRootPart.Position.X)..", ".. math.round(char.HumanoidRootPart.Position.Y)..", "..math.round(char.HumanoidRootPart.Position.Z)).." ]")
 
-	local AutoSetInfoServer
-	AutoSetInfo = Info:AddToggle({
-		Name = "Auto Set Info",
-		Default = false,
-		Callback = function(Value)
-			getgenv().AutoSetInfo = Value
-			AutoSetInfoServer = game:GetService("RunService").RenderStepped:Connect(function()
-				if getgenv().AutoSetInfo == true then
-					CanYouFps:Set("Your Fps [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
-					ServerPlayer:Set("Player In Server [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
-					TimeServer:Set("Server Time [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minutes | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
-					CanYouPing:Set("Your Ping [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
-					AgeAccYou:Set("Your Account Age [ "..plr.AccountAge.." ]")
-					TimeNow:Set("Now Time [ "..os.date("%X").." ]")
-					ViewAgeServer:Set("Server's Age [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
-					PlateTime:Set("Plate Time [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
-					if char.Humanoid.Health == 0 then
-						ResetTime:Set("Time Spawn [ "..Players.RespawnTime.." ]")
-					else
-						ResetTime:Set("Time Spawn [ Not Dead ]")
-					end
-					PositionYou:Set("Position In You [ "..tostring(math.round(char.HumanoidRootPart.Position.X)..", ".. math.round(char.HumanoidRootPart.Position.Y)..", "..math.round(char.HumanoidRootPart.Position.Z)).." ]")
-					CodeKeypad:Set("Code Keypad [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
-					CheckSlap:Set("Check Slap [ "..GetSlaps().." ]")
-					Glove:Set("You're Using Glove [ "..GetEquippedGlove().." ]")
-					if char:FindFirstChild("rock") then
-						WalkspeedYou:Set("Walk Speed [ Not Walk then rock ]")
-						JumppowerYou:Set("Jump Power [ Not Jump Power then rock ]")
-						HealthYou:Set("Health You [ Not Health then rock ]")
-						HipHeightYou:Set("Hip Height [ Not Hip then rock ]")
-					else
-						WalkspeedYou:Set("Walk Speed [ "..char.Humanoid.WalkSpeed.." ]")
-						JumppowerYou:Set("Jump Power [ "..char.Humanoid.JumpPower.." ]")
-						HealthYou:Set("Health You [ "..char.Humanoid.Health.." ]")
-						HipHeightYou:Set("Hip Height [ "..char.Humanoid.HipHeight.." ]")
-					end
-					GravityYou:Set("Gravity [ "..game.Workspace.Gravity.." ]")
-					if not game.Workspace:FindFirstChild("Keypad") then
-						KeypadSpawn:Set("Keypad Spawned [ No ]")
-					else
-						KeypadSpawn:Set("Keypad Spawned [ Yes ]")
-					end
-					if not game.Workspace:FindFirstChild("Toolbox") then
-						ToolboxSpawn:Set("Spawned Toolbox [ No ]")
-					else
-						ToolboxSpawn:Set("Spawned Toolbox [ Yes ]")
-					end
-					if not game.Workspace:FindFirstChild("SiphonOrb") then
-						SiphonOrbSpawn:Set("Spawned Siphon Orb [ No ]")
-					else
-						SiphonOrbSpawn:Set("Spawned Siphon Orb [ Yes ]")
-					end
-				elseif getgenv().AutoSetInfo == false then
-					AutoSetInfoServer:Disconnect()
-					AutoSetInfoServer = nil
-				end
-			end)
-		end    
-	})
+	game:GetService("RunService").RenderStepped:Connect(function()
+		CanYouFps:Set("Your Fps: [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
+		CanYouPing:Set("Your Ping: [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
+		ServerPlayer:Set("Player In Server: [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
+		TimeServer:Set("Server Time: [ "..math.floor(workspace.DistributedGameTime / 60 / 60).." Hour | "..math.floor(workspace.DistributedGameTime / 60) - (math.floor(workspace.DistributedGameTime / 60 / 60) * 60).." Minute | "..math.floor(workspace.DistributedGameTime) - (math.floor(workspace.DistributedGameTime / 60) * 60).." Second ]")
+		TimeNow:Set("Now Time: [ "..os.date("%X").." ]")
+		AgeAccYou:Set("Your Account Age: [ "..plr.AccountAge.." ]")
+		ViewAgeServer:Set("Server Age: [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
+		CodeKeypad:Set("Elude Code Keypad: [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
+		if not game.Workspace:FindFirstChild("Keypad") then
+			KeypadSpawn:Set("Keypad Spawned: [ No ]")
+		else
+			KeypadSpawn:Set("Keypad Spawned: [ Yes ]")
+		end
+		if not game.Workspace:FindFirstChild("Toolbox") then
+			ToolboxSpawn:Set("Is Toolbox Spawned: [ No ]")
+		else
+			ToolboxSpawn:Set("Is Toolbox Spawned: [ Yes ]")
+		end
+		if not game.Workspace:FindFirstChild("SiphonOrb") then
+			SiphonOrbSpawn:Set("Spawned Siphon Orb: [ No ]")
+		else
+			SiphonOrbSpawn:Set("Spawned Siphon Orb: [ Yes ]")
+		end
+		CheckSlap:Set("Total Slaps Quantity: [ "..GetSlaps().." ]")
+		Glove:Set("You're Using Glove: [ "..GetEquippedGlove().." ]")
+		PlateTime:Set("Plate Time: [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
+		if char:FindFirstChild("rock") then
+			WalkspeedYou:Set("Walk Speed: [ Can't Get while being a Rock ]")
+			JumppowerYou:Set("Jump Power: [ Can't Get while being a Rock ]")
+			HealthYou:Set("Your Health: [ Can't Get while being a Rock ]")
+			HipHeightYou:Set("Hip Height: [ Can't Get while being a Rock ]")
+		else
+			WalkspeedYou:Set("Walk Speed: [ "..char.Humanoid.WalkSpeed.." ]")
+			JumppowerYou:Set("Jump Power: [ "..char.Humanoid.JumpPower.." ]")
+			HealthYou:Set("Your Health: [ "..char.Humanoid.Health.." ]")
+			HipHeightYou:Set("Hip Height: [ "..char.Humanoid.HipHeight.." ]")
+		end
+		GravityYou:Set("Gravity: [ "..game.Workspace.Gravity.." ]")
+		PositionYou:Set("Your Current Position: [ "..tostring(math.round(char.HumanoidRootPart.Position.X)..", ".. math.round(char.HumanoidRootPart.Position.Y)..", "..math.round(char.HumanoidRootPart.Position.Z)).." ]")
+	end)
 
 	local InfoServer = Info:AddSection({Name = "Notification"})
 	Info:AddLabel("------------------------------[ Warning ]------------------------------")
