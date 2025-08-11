@@ -665,6 +665,10 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		local servertime = game.Workspace:WaitForChild("Lobby"):WaitForChild("ServerAge"):FindFirstChild("Text"):FindFirstChild("SurfaceGui"):FindFirstChild("TextLabel").Text
 		local OnlyTheNumbersInTheText = servertime:gsub("%D+", "")
 		local Time = tonumber(OnlyTheNumbersInTheText)
+
+		local plate = plr.PlayerGui:WaitForChild("PlateIndicator"):FindFirstChild("TextLabel").Text
+		local thetimeinnumber = plate:gsub("%D+", "")
+		local plateinnumber = tonumber(thetimeinnumber)
 		
 		CanYouFps:Set("Your Fps: [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
 		CanYouPing:Set("Your Ping: [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
@@ -691,7 +695,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end
 		CheckSlap:Set("Total Slaps Quantity: [ "..GetSlaps().." ]")
 		Glove:Set("You're Using Glove: [ "..GetEquippedGlove().." ]")
-		PlateTime:Set("Plate Time: [ "..plr.PlayerGui.PlateIndicator.TextLabel.Text.." ]")
+		PlateTime:Set("Plate Time: [ "..plateinnumber.." ]")
 		if char:FindFirstChild("rock") then
 			WalkspeedYou:Set("Walk Speed: [ Can't Get while being a Rock ]")
 			JumppowerYou:Set("Jump Power: [ Can't Get while being a Rock ]")
