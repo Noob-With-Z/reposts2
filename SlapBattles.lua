@@ -570,7 +570,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 
 	local Script = Window:MakeTab({
 		Name = "Script",
-		Icon = "rbxassetid://8997387937",
+		Icon = "rbxassetid://7733920644",
 		PremiumOnly = false
 	})
 
