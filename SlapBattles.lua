@@ -195,6 +195,13 @@ plr.OnTeleport:Connect(function(State)
 	if Teleporting == true and State ~= Enum.TeleportState.Failed and (queueteleport or queue_on_teleport) then
 		Teleporting = false
 		queueteleport([[
+			local GameIsLoaded
+			repeat task.wait() until game:IsLoaded()
+			warn('[NoobZ Debug]: Player Teleported.')
+			GameIsLoaded = true
+			repeat task.wait() until GameIsLoaded
+			task.wait(.25)
+			
 		function missing(t, f, fallback)
 			if type(f) == t then return f end
 			return fallback
@@ -233,13 +240,6 @@ plr.OnTeleport:Connect(function(State)
 		end		
 
 		if GetSpecificSettings() and GetSpecificSettings("AutoExecuteOnTeleport") == true then
-			local GameIsLoaded
-			repeat task.wait() until game:IsLoaded()
-			warn('[NoobZ Debug]: Player Teleported.')
-			GameIsLoaded = true
-			repeat task.wait() until GameIsLoaded
-			task.wait(.25)
-			
 			loadstring(game:HttpGet('raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
 			warn('[NoobZ Debug]: Loading...')
 			warn('[NoobZ Debug]: Settings Loaded: {\n'..tostring(GetSpecificSettings("GetAll"))..'\n}')
