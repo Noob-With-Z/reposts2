@@ -195,6 +195,43 @@ plr.OnTeleport:Connect(function(State)
 	if Teleporting == true and State ~= Enum.TeleportState.Failed and (queueteleport or queue_on_teleport) then
 		Teleporting = false
 		queueteleport([[
+		function missing(t, f, fallback)
+			if type(f) == t then return f end
+			return fallback
+		end
+
+		local waxwritefile, waxreadfile = writefile, readfile
+
+		local readfile = missing("function", waxreadfile) and function(file, safe)
+			if safe == true then return pcall(waxreadfile, file) end
+			return waxreadfile(file)
+		end
+
+		function CanReadFile()
+			if readfile then
+				return true
+			end
+		end
+
+		function GetSpecificSettings(SettName)
+			if not SettName then
+				if CanReadFile() then
+					return true
+				else
+					return false
+				end
+			end
+
+			if CanReadFile() then
+				if SettName == "GetAll" then
+					return game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
+				else
+					local sett = game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
+					return sett[SettName]
+				end
+			end
+		end		
+
 		if GetSpecificSettings() and GetSpecificSettings("AutoExecuteOnTeleport") == true then
 			local GameIsLoaded
 			repeat task.wait() until game:IsLoaded()
