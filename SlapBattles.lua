@@ -589,20 +589,20 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	AgeAccYou = Info:AddLabel("Your Account Age: [ "..plr.AccountAge.." ]")
 	ViewAgeServer = Info:AddLabel("Server Age: [ "..game.Workspace.Lobby.ServerAge.Text.SurfaceGui.TextLabel.Text.." ]")
 	CodeKeypad = Info:AddLabel("Code Keypad [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
-	if not game.Workspace:FindFirstChild("Keypad") then
-		KeypadSpawn = Info:AddLabel("Keypad Spawned: [ No ]")
-	else
+	if game.Workspace:FindFirstChild("Keypad") then
 		KeypadSpawn = Info:AddLabel("Keypad Spawned: [ Yes ]")
-	end
-	if not game.Workspace:FindFirstChild("Toolbox") then
-		ToolboxSpawn = Info:AddLabel("Are Toolbox Spawned: [ No ]")
 	else
+		KeypadSpawn = Info:AddLabel("Keypad Spawned: [ No ]")
+	end
+	if game.Workspace:FindFirstChild("Toolbox") then
 		ToolboxSpawn = Info:AddLabel("Are Toolbox Spawned: [ Yes ]")
-	end
-	if not game.Workspace:FindFirstChild("SiphonOrb") then
-		SiphonOrbSpawn = Info:AddLabel("Spawned Siphon Orb: [ No ]")
 	else
+		ToolboxSpawn = Info:AddLabel("Are Toolbox Spawned: [ No ]")
+	end
+	if game.Workspace:FindFirstChild("SiphonOrb") then
 		SiphonOrbSpawn = Info:AddLabel("Spawned Siphon Orb: [ Yes ]")
+	else
+		SiphonOrbSpawn = Info:AddLabel("Spawned Siphon Orb: [ No ]")
 	end
 	CheckSlap = Info:AddLabel("Slaps You Have: [ "..GetSlaps().." ]")
 	Glove = Info:AddLabel("You're Using Glove: [ "..GetEquippedGlove().." ]")
