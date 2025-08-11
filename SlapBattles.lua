@@ -637,20 +637,20 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		AgeAccYou:Set("Your Account Age: [ "..plr.AccountAge.." ]")
 		ViewAgeServer:Set("Server Age: [ " .. Time .. " ]")
 		CodeKeypad:Set("Elude Code Keypad: [ "..tostring((#Players:GetPlayers()) * 25 + 1100 - 7).." ]")
-		if not game.Workspace:FindFirstChild("Keypad") then
-			KeypadSpawn:Set("Keypad Spawned: [ No ]")
-		else
+		if game.Workspace:FindFirstChild("Keypad") then
 			KeypadSpawn:Set("Keypad Spawned: [ Yes ]")
-		end
-		if not game.Workspace:FindFirstChild("Toolbox") then
-			ToolboxSpawn:Set("Is Toolbox Spawned: [ No ]")
 		else
-			ToolboxSpawn:Set("Is Toolbox Spawned: [ Yes ]")
+			KeypadSpawn:Set("Keypad Spawned: [ No ]")
 		end
-		if not game.Workspace:FindFirstChild("SiphonOrb") then
-			SiphonOrbSpawn:Set("Spawned Siphon Orb: [ No ]")
+		if game.Workspace:FindFirstChild("Toolbox") then
+			ToolboxSpawn:Set("Are Toolbox Spawned: [ Yes ]")
 		else
+			ToolboxSpawn:Set("Are Toolbox Spawned: [ No ]")
+		end
+		if game.Workspace:FindFirstChild("SiphonOrb") then
 			SiphonOrbSpawn:Set("Spawned Siphon Orb: [ Yes ]")
+		else
+			SiphonOrbSpawn:Set("Spawned Siphon Orb: [ No ]")
 		end
 		CheckSlap:Set("Total Slaps Quantity: [ "..GetSlaps().." ]")
 		Glove:Set("You're Using Glove: [ "..GetEquippedGlove().." ]")
