@@ -690,15 +690,6 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		elseif getnamecallmethod() == "FireServer" and method == game.ReplicatedStorage.WalkSpeedChanged then
 			return
 		end
-		
-		for _, connection in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-			connection:Disconnect()
-		end
-		
-		for _, connection in pairs(getconnections(game:GetService("ScriptContext").Error)) do
-			connection:Disconnect()
-		end
-		
 		return bypass(method, ...)
 	end)
 
