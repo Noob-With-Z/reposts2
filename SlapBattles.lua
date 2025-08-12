@@ -189,10 +189,11 @@ function GetSpecificSettings(SettName)
 	end
 end
 
-local Teleporting = true
+local Teleporting = false
 
 plr.OnTeleport:Connect(function(State)
-	if Teleporting == true and State ~= Enum.TeleportState.Failed and (queueteleport or queue_on_teleport) then
+		Teleporting = true
+		if Teleporting == true and State ~= Enum.TeleportState.Failed and (queueteleport or queue_on_teleport) then
 		Teleporting = false
 		queueteleport([[
 			local GameIsLoaded
