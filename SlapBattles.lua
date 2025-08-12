@@ -202,7 +202,14 @@ plr.OnTeleport:Connect(function(State)
 			warn('[NoobZ Debug]: Player Teleported.')
 			GameIsLoaded = true
 			repeat task.wait() until GameIsLoaded
-			task.wait(6.5)
+			game:GetService("StarterGui"):SetCore("SendNotification", {
+               Title = "NoobZ Debug",
+			   Description = "Warned about your teleport. Waiting game to load.",
+			   Icon = "",
+			   Duration = 300,
+			   Option1 = "Done"
+			})
+			task.wait(7.5)
 			loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
 			warn('[NoobZ Debug]: Loading...')
 		    task.wait(2)
