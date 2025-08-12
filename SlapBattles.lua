@@ -202,14 +202,14 @@ plr.OnTeleport:Connect(function(State)
 			warn('[NoobZ Debug]: Player Teleported.')
 			GameIsLoaded = true
 			repeat task.wait() until GameIsLoaded
-			task.wait(.25)
+			task.wait(6.5)
 			loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
 			warn('[NoobZ Debug]: Loading...')
 		    task.wait(2)
 			warn('[NoobZ Debug]: Settings Loaded: {\n'..tostring(GetSpecificSettings("GetAll"))..'\n}')
 		]])
 		elseif not GetSpecificSettings() then
-		   warn("[NoobZ Debug]: Can't complete setting verification. missing: readfile or writefile. ")
+		   warn("[NoobZ Debug]: Can't complete setting verification. missing: readfile or writefile.")
 		end
 	else
 		warn("[NoobZ Debug]: Can't execute script. missing: queueteleport or queue_on_teleport")
