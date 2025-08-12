@@ -202,7 +202,8 @@ plr.OnTeleport:Connect(function(State)
 			GameIsLoaded = true
 			repeat task.wait() until GameIsLoaded
 			task.wait(.25)
-			
+		    repeat task.wait() until game:GetService("HttpService")
+		    task.wait(.5)
 		function missing(t, f, fallback)
 			if type(f) == t then return f end
 			return fallback
@@ -4231,7 +4232,7 @@ local KickPlayerFirework
 			end
 		end	  
 	})
-
+    local FireworkBringSit
 	FireworkBringSit = GlovesFunctions:AddToggle({
 		Name = "Auto Bring Firework",
 		Default = false,
