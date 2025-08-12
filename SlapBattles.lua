@@ -503,6 +503,14 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		["Killerfish"] = RS.GeneralHit,
 	}
 
+    function GetEquippedGlove()
+	    return tostring(plr:FindFirstChild("leaderstats"):FindFirstChild("Glove").Value)
+    end
+
+    function GetSlaps()
+    	return tostring(plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value)
+    end
+
 	local Window = OrionLib:MakeWindow({IntroText = "Slap Battles 👏", IntroIcon = "rbxassetid://15315284749",Name = ("Giang Hub - Slap Battles 👏".." | ".. identifyexecutor()),IntroToggleIcon = "rbxassetid://7734091286", HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = "slap battles"})
 
 	---Bypass----
@@ -562,7 +570,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		SlapChanged.Value = ""
 	end
 
-	--Script - 15
+	-- Tabs
 	local Info = Window:MakeTab({
 		Name = "Info",
 		Icon = "rbxassetid://7734053426",
@@ -1043,16 +1051,6 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 				--	end
 				--	wait(12.3)
 				--until char:FindFirstChild("EMPStunBadgeCounter") and char.EMPStunBadgeCounter.Value >= 50
-
-
-function GetEquippedGlove()
-	return plr:FindFirstChild("leaderstats"):FindFirstChild("Glove").Value
-end
-
-function GetSlaps()
-	print("Slaps: "..plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value)
-	return plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value
-end
 
 	Badges:AddButton({
 		Name = "Get Glove Kinetic",
