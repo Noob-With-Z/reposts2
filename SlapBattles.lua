@@ -29,9 +29,9 @@ Legend:
          |_ Now supports lower/uppercase and spacing variations.
          |_ e.g.: "zahando", "ZaHando", "za hando", "Za Hando", "zAhAnDo", etc.
 ]]
---[[
--- // Temporary For Studio \\ --
 
+-- // Temporary For Studio \\ --
+--[[
 cloneref = nil
 sethiddenproperty, set_hidden_property, set_hidden_prop = nil
 gethiddenproperty, get_hidden_property, get_hidden_prop = nil
@@ -73,9 +73,9 @@ end
 
 function gethui()
 end
-
--- // lol \\ --
 ]]
+-- // lol \\ --
+
 
 if not game:IsLoaded() then
 	game.Loaded:Wait()
@@ -141,10 +141,10 @@ if CanReadFile() and CanWriteFile() and isfile and isfolder and makefolder then
 	local defaultconfig = {
 		["AutoExecuteOnTeleport"] = false
 	}
-	
+
 	local file
 	local fileName
-	
+
 	if string.sub("SlapBattles", -3) == '.giangsett' then
 		pcall(function() file = readfile("SlapBattles") end)
 		fileName = "SlapBattles"
@@ -152,7 +152,7 @@ if CanReadFile() and CanWriteFile() and isfile and isfolder and makefolder then
 		pcall(function() file = readfile("SlapBattles"..'.giangsett') end)
 		fileName = "SlapBattles"..'.giangsett'
 	end
-	
+
 	local config = defaultconfig
 	local success, result = pcall(function()
 		return game:GetService("HttpService"):JSONDecode(file)
@@ -170,7 +170,7 @@ else
 end
 
 function GetSpecificSettings(SettName)
-	
+
 	if not SettName then
 		if CanReadFile() then
 			return true
@@ -178,7 +178,7 @@ function GetSpecificSettings(SettName)
 			return false
 		end
 	end
-	
+
 	if CanReadFile() then
 		if SettName == "GetAll" then
 			return game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
@@ -194,21 +194,213 @@ local Teleporting = false
 plr.OnTeleport:Connect(function(State)
 	Teleporting = true
 	if Teleporting == true and State ~= Enum.TeleportState.Failed and (queueteleport or queue_on_teleport) then
-    	Teleporting = false
-	    if GetSpecificSettings() and GetSpecificSettings("AutoExecuteOnTeleport") == true then
-		  queueteleport([[
+		Teleporting = false
+		if GetSpecificSettings() and GetSpecificSettings("AutoExecuteOnTeleport") == true then
+			queueteleport([[
 			local GameIsLoaded
 			repeat task.wait() until game:IsLoaded()
-			warn('[NoobZ Debug]: Player Teleported.')
+			warn('[NoobZ Debug]: Player Teleported. Please wait while the game loads at least a bit.')
 			GameIsLoaded = true
 			repeat task.wait() until GameIsLoaded
-			game:GetService("StarterGui"):SetCore("SendNotification", {
-               Title = "NoobZ Debug",
-			   Description = "Warned about your teleport. Waiting game to load.",
-			   Icon = "",
-			   Duration = 300,
-			   Option1 = "Done"
-			})
+			
+	task.spawn(function()
+	local dangparent
+
+	if gethui then
+		dangparent = gethui()
+	else
+		if game:FindFirstChildWhichIsA("CoreGui") then
+			dangparent = game.CoreGui
+		end
+	end
+
+	local Notification = Instance.new("ScreenGui")
+	local Main = Instance.new("Frame")
+	local Desc = Instance.new("TextLabel")
+	local UIStroke = Instance.new("UIStroke")
+	local UIGradient = Instance.new("UIGradient")
+	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+	local Title = Instance.new("TextLabel")
+	local UIStroke_2 = Instance.new("UIStroke")
+	local UIGradient_2 = Instance.new("UIGradient")
+	local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+	local ImageLabel = Instance.new("ImageLabel")
+	local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+	local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+	local UICorner = Instance.new("UICorner")
+	local UIStroke_3 = Instance.new("UIStroke")
+	local PW_Text = Instance.new("TextLabel")
+	local UIStroke_4 = Instance.new("UIStroke")
+	local UIGradient_3 = Instance.new("UIGradient")
+	local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
+
+	Notification.Name = "Notification"
+	Notification.Parent = dangparent
+	Notification.DisplayOrder = 999999999
+	Notification.ResetOnSpawn = false
+
+	Main.Name = "Main"
+	Main.Parent = Notification
+	Main.AnchorPoint = Vector2.new(0.5, 0.5)
+	Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Main.BackgroundTransparency = 0.500
+	Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Main.BorderSizePixel = 0
+	Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Main.Size = UDim2.new(0.349999994, 0, 0.400000036, 0)
+	Main.ZIndex = 2
+
+	Desc.Name = "Desc"
+	Desc.Parent = Main
+	Desc.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Desc.BackgroundTransparency = 1.000
+	Desc.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Desc.BorderSizePixel = 0
+	Desc.Position = UDim2.new(0.0956531838, 0, 0.271049589, 0)
+	Desc.Size = UDim2.new(0.804597735, 0, 0.692041457, 0)
+	Desc.ZIndex = 4
+	Desc.Font = Enum.Font.FredokaOne
+	Desc.Text = "Teleport detected. Waiting for the game to load."
+	Desc.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Desc.TextScaled = true
+	Desc.TextSize = 14.000
+	Desc.TextWrapped = true
+
+	UIStroke.Parent = Desc
+	UIStroke.Thickness = 4.000
+
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))}
+	UIGradient.Rotation = -90
+	UIGradient.Parent = Desc
+
+	UIAspectRatioConstraint.Parent = Desc
+	UIAspectRatioConstraint.AspectRatio = 2.246
+
+	Title.Name = "Title"
+	Title.Parent = Main
+	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1.000
+	Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Title.BorderSizePixel = 0
+	Title.Position = UDim2.new(0.104493119, 0, 0.025951555, 0)
+	Title.Size = UDim2.new(0.789670169, 0, 0.245098025, 0)
+	Title.ZIndex = 4
+	Title.Font = Enum.Font.FredokaOne
+	Title.Text = "NoobZ Warning"
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.TextScaled = true
+	Title.TextSize = 14.000
+	Title.TextWrapped = true
+
+	UIStroke_2.Parent = Title
+	UIStroke_2.Thickness = 4.000
+
+	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))}
+	UIGradient_2.Rotation = -90
+	UIGradient_2.Parent = Title
+
+	UIAspectRatioConstraint_2.Parent = Title
+	UIAspectRatioConstraint_2.AspectRatio = 6.224
+
+	ImageLabel.Parent = Main
+	ImageLabel.BackgroundColor3 = Color3.fromRGB(220, 220, 0)
+	ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ImageLabel.BorderSizePixel = 0
+	ImageLabel.Size = UDim2.new(1, 0, 1, 0)
+	ImageLabel.ZIndex = 3
+	ImageLabel.Image = "rbxassetid://88732934189135"
+	ImageLabel.ImageColor3 = Color3.fromRGB(0, 0, 0)
+	ImageLabel.ScaleType = Enum.ScaleType.Tile
+	ImageLabel.TileSize = UDim2.new(0.5, 0, 0.5, 0)
+
+	UIAspectRatioConstraint_3.Parent = ImageLabel
+	UIAspectRatioConstraint_3.AspectRatio = 1.932
+
+	UIAspectRatioConstraint_4.Parent = Main
+	UIAspectRatioConstraint_4.AspectRatio = 1.932
+
+	UICorner.CornerRadius = UDim.new(0, 5)
+	UICorner.Parent = Main
+
+	UIStroke_3.Parent = Main
+	UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke_3.Thickness = 5.000
+
+	PW_Text.Name = "PW_Text"
+	PW_Text.Parent = Notification
+	PW_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	PW_Text.BackgroundTransparency = 1.000
+	PW_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	PW_Text.BorderSizePixel = 0
+	PW_Text.Position = UDim2.new(0.368959993, 0, 0.912341416, 0)
+	PW_Text.Size = UDim2.new(0.261494219, 0, 0.0876585841, 0)
+	PW_Text.ZIndex = 4
+	PW_Text.Font = Enum.Font.FredokaOne
+	PW_Text.Text = "Please Wait :)"
+	PW_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+	PW_Text.TextScaled = true
+	PW_Text.TextSize = 14.000
+	PW_Text.TextWrapped = true
+
+	UIStroke_4.Parent = PW_Text
+	UIStroke_4.Thickness = 4.000
+
+	UIGradient_3.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))}
+	UIGradient_3.Rotation = -90
+	UIGradient_3.Parent = PW_Text
+
+	UIAspectRatioConstraint_5.Parent = PW_Text
+	UIAspectRatioConstraint_5.AspectRatio = 6.586
+
+	local TweenService = game:GetService("TweenService")
+
+	local OrgPosMain = Main.Position
+	local OrgPosPW = PW_Text.Position
+
+	Main.Position = UDim2.new(0.5, 0, -1.2, 0)
+	PW_Text.Position = UDim2.new(0.5, 0, 1.2, 0)
+
+	local function EpicName()
+		local thisname = ""
+		local minimumstringsize = math.random(25, 50)
+		local maxstringsize = math.random(250, 500)
+
+		local randomstringmin = 1
+		local randomstringmax = 1000
+
+		local size = math.random(minimumstringsize, maxstringsize)
+
+		for i = 1, size do
+			thisname = thisname..string.char(math.random(randomstringmin, randomstringmax))
+		end
+
+		if thisname then
+			local tobyte = string.byte(thisname)
+			return tobyte
+		else
+			return "Epic Name lol"
+		end
+	end
+
+	for i, v in Notification:GetDescendants() do
+		v.Name = EpicName()
+	end
+
+	Main:TweenPosition(OrgPosMain, Enum.EasingDirection.In, Enum.EasingStyle.Cubic, 3, true)
+	task.wait(3)
+	PW_Text:TweenPosition(OrgPosPW, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 2.5, true)
+
+	task.wait(6)
+
+	Main:TweenPosition(UDim2.new(0.5, 0, -1.2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 3, true)
+	PW_Text:TweenPosition(UDim2.new(0.5, 0, 1.2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 5, true)
+
+	task.wait(7)
+
+	Main:Destroy()
+	PW_Text:Destroy()
+	end)			
+
 			task.wait(7.5)
 			loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
 			warn('[NoobZ Debug]: Loading...')
@@ -216,7 +408,7 @@ plr.OnTeleport:Connect(function(State)
 			warn('[NoobZ Debug]: Settings Loaded: {\n'..tostring(GetSpecificSettings("GetAll"))..'\n}')
 		]])
 		elseif not GetSpecificSettings() then
-		   warn("[NoobZ Debug]: Can't complete setting verification. missing: readfile or writefile.")
+			warn("[NoobZ Debug]: Can't complete setting verification. missing: readfile or writefile.")
 		end
 	else
 		warn("[NoobZ Debug]: Can't execute script. missing: queueteleport or queue_on_teleport")
@@ -477,13 +669,13 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		["Killerfish"] = RS.GeneralHit,
 	}
 
-    function GetEquippedGlove()
-	    return tostring(plr:FindFirstChild("leaderstats"):FindFirstChild("Glove").Value)
-    end
+	function GetEquippedGlove()
+		return tostring(plr:FindFirstChild("leaderstats"):FindFirstChild("Glove").Value)
+	end
 
-    function GetSlaps()
-    	return tostring(plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value)
-    end
+	function GetSlaps()
+		return tostring(plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value)
+	end
 
 	local Window = OrionLib:MakeWindow({IntroText = "Slap Battles 👏", IntroIcon = "rbxassetid://15315284749",Name = ("Giang Hub - Slap Battles 👏".." | ".. identifyexecutor()),IntroToggleIcon = "rbxassetid://7734091286", HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = "slap battles"})
 
@@ -498,6 +690,15 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		elseif getnamecallmethod() == "FireServer" and method == game.ReplicatedStorage.WalkSpeedChanged then
 			return
 		end
+		
+		for _, connection in pairs(getconnections(game:GetService("LogService").MessageOut)) do
+			connection:Disconnect()
+		end
+		
+		for _, connection in pairs(getconnections(game:GetService("ScriptContext").Error)) do
+			connection:Disconnect()
+		end
+		
 		return bypass(method, ...)
 	end)
 
@@ -644,7 +845,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	PositionYou = Info:AddLabel("Position In Your [ "..tostring(math.round(char.HumanoidRootPart.Position.X)..", ".. math.round(char.HumanoidRootPart.Position.Y)..", "..math.round(char.HumanoidRootPart.Position.Z)).." ]")
 
 	game:GetService("RunService").RenderStepped:Connect(function()
-		
+
 		local servertime = game.Workspace:WaitForChild("Lobby"):WaitForChild("ServerAge"):FindFirstChild("Text"):FindFirstChild("SurfaceGui"):FindFirstChild("TextLabel").Text
 		local OnlyTheNumbersInTheText = servertime:gsub("%D+", "")
 		local Time = tonumber(OnlyTheNumbersInTheText)
@@ -652,7 +853,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		local plate = plr.PlayerGui:WaitForChild("PlateIndicator"):FindFirstChild("TextLabel").Text
 		local thetimeinnumber = plate:gsub("%D+", "")
 		local plateinnumber = tonumber(thetimeinnumber)
-		
+
 		CanYouFps:Set("Your Fps: [ "..math.floor(workspace:GetRealPhysicsFPS()).." ]")
 		CanYouPing:Set("Your Ping: [ "..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString().." ]")
 		ServerPlayer:Set("Player In Server: [ "..#Players:GetPlayers().." / "..Players.MaxPlayers.." ]")
@@ -1004,32 +1205,32 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	})
 
 
-				--OGL = char.HumanoidRootPart.CFrame
-				--for i = 1,150 do
-				--	game.ReplicatedStorage.SelfKnockback:FireServer({["Force"] = 0,["Direction"] = Vector3.new(0,0.01,0)})
-				--	wait(0.05)
-				--end
-				--wait(1.5)
-				--repeat
-				--	local players = Players:GetChildren()
-				--	local RandomPlayer = players[math.random(1, #players)]
-				--	repeat RandomPlayer = players[math.random(1, #players)] until RandomPlayer ~= plr and RandomPlayer.Character:FindFirstChild("entered") and RandomPlayer.Character:FindFirstChild("rock") == nil and RandomPlayer.Character.Head:FindFirstChild("UnoReverseCard") == nil and RandomPlayer.Character.Humanoid.Health ~= 0
-				--	Target = RandomPlayer
-				--	char.HumanoidRootPart.CFrame = Target.Character.HumanoidRootPart.CFrame * CFrame.new(0,-20,0)
-				--	wait(0.25)
-				--	game.ReplicatedStorage.StunR:FireServer(char.Stun)
-				--	char.HumanoidRootPart.CFrame = OGL
-				--	wait(0.5)
-				--	if char and char:FindFirstChild("EMPStunBadgeCounter") then
-				--		OrionLib:MakeNotification({Name = "Error",Content = "Counter Stun [ "..char.EMPStunBadgeCounter.Value.." ]",Image = "rbxassetid://7733658504",Time = 5})
-				--	end
-				--	wait(12.3)
-				--until char:FindFirstChild("EMPStunBadgeCounter") and char.EMPStunBadgeCounter.Value >= 50
+	--OGL = char.HumanoidRootPart.CFrame
+	--for i = 1,150 do
+	--	game.ReplicatedStorage.SelfKnockback:FireServer({["Force"] = 0,["Direction"] = Vector3.new(0,0.01,0)})
+	--	wait(0.05)
+	--end
+	--wait(1.5)
+	--repeat
+	--	local players = Players:GetChildren()
+	--	local RandomPlayer = players[math.random(1, #players)]
+	--	repeat RandomPlayer = players[math.random(1, #players)] until RandomPlayer ~= plr and RandomPlayer.Character:FindFirstChild("entered") and RandomPlayer.Character:FindFirstChild("rock") == nil and RandomPlayer.Character.Head:FindFirstChild("UnoReverseCard") == nil and RandomPlayer.Character.Humanoid.Health ~= 0
+	--	Target = RandomPlayer
+	--	char.HumanoidRootPart.CFrame = Target.Character.HumanoidRootPart.CFrame * CFrame.new(0,-20,0)
+	--	wait(0.25)
+	--	game.ReplicatedStorage.StunR:FireServer(char.Stun)
+	--	char.HumanoidRootPart.CFrame = OGL
+	--	wait(0.5)
+	--	if char and char:FindFirstChild("EMPStunBadgeCounter") then
+	--		OrionLib:MakeNotification({Name = "Error",Content = "Counter Stun [ "..char.EMPStunBadgeCounter.Value.." ]",Image = "rbxassetid://7733658504",Time = 5})
+	--	end
+	--	wait(12.3)
+	--until char:FindFirstChild("EMPStunBadgeCounter") and char.EMPStunBadgeCounter.Value >= 50
 
 	Badges:AddButton({
 		Name = "Get Glove Kinetic",
 		Callback = function()
-			
+
 		end 
 	})
 
@@ -1256,7 +1457,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 					end
 				end
 			end)
-			
+
 			if game:GetService("ReplicatedStorage").Assets.Retro then
 				game.ReplicatedStorage.Assets.Retro.Parent = workspace
 				wait(1.5)
@@ -1472,7 +1673,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		Name = "Get Counter + Elude",
 		Callback = function()
 			if getgenv().SelectMaze == "Teleport" then
-				
+
 				if queueteleport then
 					queueteleport([[
 					if not game:IsLoaded() then
@@ -1501,7 +1702,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 					end
 					]])
 				end
-				
+
 				game:GetService("TeleportService"):Teleport(11828384869)
 			elseif getgenv().SelectMaze == "Auto Keypad" then
 				if not workspace:FindFirstChild("Keypad") then
@@ -1512,7 +1713,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 						end
 					end
 				else
-					
+
 					if queueteleport then
 						queueteleport([[
 					if not game:IsLoaded() then
@@ -1539,7 +1740,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 					end
 						]])
 					end
-					
+
 					OrionLib:MakeNotification({Name = "Success",Content = "Keypad found. Starting numbers sequence...",Image = "rbxassetid://7733658504",Time = 5})
 					game.Workspace.CurrentCamera.CameraSubject = workspace.Keypad.Buttons.Enter
 					fireclickdetector(workspace:WaitForChild("Keypad").Buttons:FindFirstChild("Reset").ClickDetector)
@@ -1563,14 +1764,14 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 				local Door = 0
 				for i = 1, 10 do
 					Door = Door + 1
-				
+
 					firetouchinterest(char:WaitForChild("Head"), workspace.PocketDimension.Doors[Door].TouchInterest.Parent, 0)
 					firetouchinterest(char:WaitForChild("Head"), workspace.PocketDimension.Doors[Door].TouchInterest.Parent, 1)
-				
+
 					wait(3.75)
 				end
 			else
-			OrionLib:MakeNotification({Name = "Error",Content = "You already have this badge.",Image = "rbxassetid://7733658504",Time = 5})
+				OrionLib:MakeNotification({Name = "Error",Content = "You already have this badge.",Image = "rbxassetid://7733658504",Time = 5})
 			end
 		end    
 	})
@@ -1607,7 +1808,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 					game:GetService("ReplicatedStorage").nightmare:FireServer("LightBroken")
 				until game:GetService("BadgeService"):UserHasBadgeAsync(plr.UserId, 490455814138437)
 			]]
-			
+
 		end 
 	})
 
@@ -2998,7 +3199,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 		end    
 	})
 
-local KickPlayerFirework
+	local KickPlayerFirework
 
 	GlovesFunctions:AddTextbox({
 		Name = "Kick Player [Firework]",
@@ -3036,17 +3237,17 @@ local KickPlayerFirework
 										local VictimHRP = Victim.Character:FindFirstChild("HumanoidRootPart")
 										if VictimHRP then
 											local brazilportal = workspace:FindFirstChild("Lobby"):FindFirstChild("brazil")
-											
+
 											for i, v in pairs(brazilportal:GetDescendants()) do
 												if v:IsA("BasePart") then
 													v.CanTouch = false
 												end
 											end
-											
+
 											char:FindFirstChild("HumanoidRootPart").CFrame = brazilportal.portal.CFrame * CFrame.new(0, 1, 0)
-											
+
 											game:GetService("ReplicatedStorage"):FindFirstChild("Firework"):InvokeServer()
-											
+
 											for i,v in pairs(game.Workspace:GetChildren()) do
 												if v.Name:match(plr.Name) and v:FindFirstChild("VehicleSeat") then
 													v.VehicleSeat.CFrame = VictimHRP.CFrame
@@ -3054,7 +3255,7 @@ local KickPlayerFirework
 													v.VehicleSeat.CFrame = brazilportal.portal.CFrame
 												end
 											end
-											
+
 										else
 											OrionLib:MakeNotification({Name = "Error",Content = "Victim's HumanoidRootPart didn't be found",Image = "rbxassetid://7733658504",Time = 5})
 										end
@@ -3421,7 +3622,7 @@ local KickPlayerFirework
 					PlayerToGrabBring = nil
 				end
 			end
-			
+
 			if PlayerToGrabBring ~= nil then
 				OrionLib:MakeNotification({Name = "Player Found",Content = additional .. " (@" .. PlayerToGrabBring .. ")", Image = "rbxasdetid://7733658504",Time = 5})
 			end
@@ -5829,9 +6030,9 @@ local KickPlayerFirework
 	Misc:AddButton({
 		Name = "Free All Animations",
 		Callback = function()
-			
+
 			local EP
-			
+
 			local Floss = char.Humanoid:LoadAnimation(game.ReplicatedStorage.AnimationPack.Floss, char.Humanoid)
 			local Groove = char.Humanoid:LoadAnimation(game.ReplicatedStorage.AnimationPack.Groove, char.Humanoid)
 			local Headless = char.Humanoid:LoadAnimation(game.ReplicatedStorage.AnimationPack.Headless, char.Humanoid)
@@ -5919,7 +6120,7 @@ local KickPlayerFirework
 
 				if getgenv().EquipGlove then
 					local Lobby = workspace:FindFirstChild("Lobby")
-					
+
 					if Lobby then
 						if Lobby:FindFirstChild(getgenv().EquipGlove) then
 							gloveToEquip = Lobby[getgenv().EquipGlove]
@@ -5940,11 +6141,11 @@ local KickPlayerFirework
 							end
 						end
 					end
-					
+
 					if gloveToEquip then
 						fireclickdetector(gloveToEquip.ClickDetector)
 					end
-					
+
 				end
 
 			else
@@ -7557,7 +7758,7 @@ local KickPlayerFirework
 	game.Workspace.NoChanged.Changed:Connect(function()
 		AntiRagdoll:Set(game.Workspace.NoChanged.Value)
 	end)
-	
+
 	do
 		---SafeSpotBox---
 
