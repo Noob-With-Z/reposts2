@@ -203,7 +203,7 @@ plr.OnTeleport:Connect(function(State)
 			GameIsLoaded = true
 			repeat task.wait() until GameIsLoaded
 			task.wait(.25)
-			loadstring(game:HttpGet('raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
+			loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
 			warn('[NoobZ Debug]: Loading...')
 		    task.wait(2)
 			warn('[NoobZ Debug]: Settings Loaded: {\n'..tostring(GetSpecificSettings("GetAll"))..'\n}')
