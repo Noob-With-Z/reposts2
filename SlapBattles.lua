@@ -192,61 +192,27 @@ end
 local Teleporting = false
 
 plr.OnTeleport:Connect(function(State)
-		Teleporting = true
-		if Teleporting == true and State ~= Enum.TeleportState.Failed and (queueteleport or queue_on_teleport) then
-		Teleporting = false
-		queueteleport([[
+	Teleporting = true
+	if Teleporting == true and State ~= Enum.TeleportState.Failed and (queueteleport or queue_on_teleport) then
+    	Teleporting = false
+	    if GetSpecificSettings() and GetSpecificSettings("AutoExecuteOnTeleport") == true then
+		  queueteleport([[
 			local GameIsLoaded
 			repeat task.wait() until game:IsLoaded()
 			warn('[NoobZ Debug]: Player Teleported.')
 			GameIsLoaded = true
 			repeat task.wait() until GameIsLoaded
 			task.wait(.25)
-		    repeat task.wait() until game:GetService("HttpService")
-		    task.wait(.5)
-		function missing(t, f, fallback)
-			if type(f) == t then return f end
-			return fallback
-		end
-
-		local waxwritefile, waxreadfile = writefile, readfile
-
-		local readfile = missing("function", waxreadfile) and function(file, safe)
-			if safe == true then return pcall(waxreadfile, file) end
-			return waxreadfile(file)
-		end
-
-		function CanReadFile()
-			if readfile then
-				return true
-			end
-		end
-
-		function GetSpecificSettings(SettName)
-			if not SettName then
-				if CanReadFile() then
-					return true
-				else
-					return false
-				end
-			end
-
-			if CanReadFile() then
-				if SettName == "GetAll" then
-					return game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
-				else
-					local sett = game:GetService("HttpService"):JSONDecode(readfile("SlapBattles"..'.giangsett'))
-					return sett[SettName]
-				end
-			end
-		end		
-
-		if GetSpecificSettings() and GetSpecificSettings("AutoExecuteOnTeleport") == true then
 			loadstring(game:HttpGet('raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
 			warn('[NoobZ Debug]: Loading...')
+		    task.wait(2)
 			warn('[NoobZ Debug]: Settings Loaded: {\n'..tostring(GetSpecificSettings("GetAll"))..'\n}')
-		end
 		]])
+		elseif not GetSpecificSettings() then
+		   warn("[NoobZ Debug]: Can't complete setting verification. missing: readfile or writefile. ")
+		end
+	else
+		warn("[NoobZ Debug]: Can't execute script. missing: queueteleport or queue_on_teleport")
 	end
 end)
 
