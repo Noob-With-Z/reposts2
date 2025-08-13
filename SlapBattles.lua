@@ -204,202 +204,135 @@ plr.OnTeleport:Connect(function(State)
 			repeat task.wait() until GameIsLoaded
 			
 	task.spawn(function()
-	local dangparent
+local Notification = Instance.new("ScreenGui")
 
-	if gethui then
-		dangparent = gethui()
-	else
-		if game:FindFirstChildWhichIsA("CoreGui") then
-			dangparent = game.CoreGui
-		end
-	end
+Parentlol = nil
 
-	local Notification = Instance.new("ScreenGui")
-	local Main = Instance.new("Frame")
-	local Desc = Instance.new("TextLabel")
-	local UIStroke = Instance.new("UIStroke")
-	local UIGradient = Instance.new("UIGradient")
-	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
-	local Title = Instance.new("TextLabel")
-	local UIStroke_2 = Instance.new("UIStroke")
-	local UIGradient_2 = Instance.new("UIGradient")
-	local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
-	local ImageLabel = Instance.new("ImageLabel")
-	local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
-	local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
-	local UICorner = Instance.new("UICorner")
-	local UIStroke_3 = Instance.new("UIStroke")
-	local PW_Text = Instance.new("TextLabel")
-	local UIStroke_4 = Instance.new("UIStroke")
-	local UIGradient_3 = Instance.new("UIGradient")
-	local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
+if get_hidden_gui or gethui then
+	local hiddenUI = get_hidden_gui or gethui
+	Parentlol = hiddenUI()
+elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+	syn.protect_gui(Notification)
+	Parentlol = game:FindFirstChildOfClass("CoreGui")
+else
+	Parentlol = game:FindFirstChildOfClass("CoreGui")
+end
 
-	Notification.Name = "Notification"
-	Notification.Parent = dangparent
-	Notification.DisplayOrder = 999999999
-	Notification.ResetOnSpawn = false
+local Main = Instance.new("Frame")
+local Desc = Instance.new("TextLabel")
+local UIStroke = Instance.new("UIStroke")
+local UIGradient = Instance.new("UIGradient")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local Title = Instance.new("TextLabel")
+local UIStroke_2 = Instance.new("UIStroke")
+local UIGradient_2 = Instance.new("UIGradient")
+local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+local ImageLabel = Instance.new("ImageLabel")
+local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+local UICorner = Instance.new("UICorner")
+local UIStroke_3 = Instance.new("UIStroke")
 
-	Main.Name = "Main"
-	Main.Parent = Notification
-	Main.AnchorPoint = Vector2.new(0.5, 0.5)
-	Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	Main.BackgroundTransparency = 0.500
-	Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Main.BorderSizePixel = 0
-	Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-	Main.Size = UDim2.new(0.349999994, 0, 0.400000036, 0)
-	Main.ZIndex = 2
+Notification.Name = "Notification"
+Notification.Parent = Parentlol
+Notification.DisplayOrder = 999999999
+Notification.ResetOnSpawn = false
 
-	Desc.Name = "Desc"
-	Desc.Parent = Main
-	Desc.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Desc.BackgroundTransparency = 1.000
-	Desc.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Desc.BorderSizePixel = 0
-	Desc.Position = UDim2.new(0.0956531838, 0, 0.271049589, 0)
-	Desc.Size = UDim2.new(0.804597735, 0, 0.692041457, 0)
-	Desc.ZIndex = 4
-	Desc.Font = Enum.Font.FredokaOne
-	Desc.Text = "Teleport detected. Waiting for the game to load."
-	Desc.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Desc.TextScaled = true
-	Desc.TextSize = 14.000
-	Desc.TextWrapped = true
+Main.Name = "Main"
+Main.Parent = Notification
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Main.BackgroundTransparency = 0.500
+Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+Main.Size = UDim2.new(0.349999994, 0, 0.400000036, 0)
+Main.ZIndex = 2
 
-	UIStroke.Parent = Desc
-	UIStroke.Thickness = 4.000
+Desc.Name = "Desc"
+Desc.Parent = Main
+Desc.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Desc.BackgroundTransparency = 1.000
+Desc.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Desc.BorderSizePixel = 0
+Desc.Position = UDim2.new(0.0956531838, 0, 0.271049589, 0)
+Desc.Size = UDim2.new(0.804597735, 0, 0.692041457, 0)
+Desc.ZIndex = 4
+Desc.Font = Enum.Font.FredokaOne
+Desc.Text = "Teleport detected. Waiting for the game to load."
+Desc.TextColor3 = Color3.fromRGB(255, 255, 255)
+Desc.TextScaled = true
+Desc.TextSize = 14.000
+Desc.TextWrapped = true
 
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))}
-	UIGradient.Rotation = -90
-	UIGradient.Parent = Desc
+UIStroke.Parent = Desc
+UIStroke.Thickness = 4.000
 
-	UIAspectRatioConstraint.Parent = Desc
-	UIAspectRatioConstraint.AspectRatio = 2.246
+UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))}
+UIGradient.Rotation = -90
+UIGradient.Parent = Desc
 
-	Title.Name = "Title"
-	Title.Parent = Main
-	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Title.BackgroundTransparency = 1.000
-	Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Title.BorderSizePixel = 0
-	Title.Position = UDim2.new(0.104493119, 0, 0.025951555, 0)
-	Title.Size = UDim2.new(0.789670169, 0, 0.245098025, 0)
-	Title.ZIndex = 4
-	Title.Font = Enum.Font.FredokaOne
-	Title.Text = "NoobZ Warning"
-	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Title.TextScaled = true
-	Title.TextSize = 14.000
-	Title.TextWrapped = true
+UIAspectRatioConstraint.Parent = Desc
+UIAspectRatioConstraint.AspectRatio = 2.246
 
-	UIStroke_2.Parent = Title
-	UIStroke_2.Thickness = 4.000
+Title.Name = "Title"
+Title.Parent = Main
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1.000
+Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title.BorderSizePixel = 0
+Title.Position = UDim2.new(0.104493119, 0, 0.025951555, 0)
+Title.Size = UDim2.new(0.789670169, 0, 0.245098025, 0)
+Title.ZIndex = 4
+Title.Font = Enum.Font.FredokaOne
+Title.Text = "NoobZ Warning"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextScaled = true
+Title.TextSize = 14.000
+Title.TextWrapped = true
 
-	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))}
-	UIGradient_2.Rotation = -90
-	UIGradient_2.Parent = Title
+UIStroke_2.Parent = Title
+UIStroke_2.Thickness = 4.000
 
-	UIAspectRatioConstraint_2.Parent = Title
-	UIAspectRatioConstraint_2.AspectRatio = 6.224
+UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))}
+UIGradient_2.Rotation = -90
+UIGradient_2.Parent = Title
 
-	ImageLabel.Parent = Main
-	ImageLabel.BackgroundColor3 = Color3.fromRGB(220, 220, 0)
-	ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	ImageLabel.BorderSizePixel = 0
-	ImageLabel.Size = UDim2.new(1, 0, 1, 0)
-	ImageLabel.ZIndex = 3
-	ImageLabel.Image = "rbxassetid://88732934189135"
-	ImageLabel.ImageColor3 = Color3.fromRGB(0, 0, 0)
-	ImageLabel.ScaleType = Enum.ScaleType.Tile
-	ImageLabel.TileSize = UDim2.new(0.5, 0, 0.5, 0)
+UIAspectRatioConstraint_2.Parent = Title
+UIAspectRatioConstraint_2.AspectRatio = 6.224
 
-	UIAspectRatioConstraint_3.Parent = ImageLabel
-	UIAspectRatioConstraint_3.AspectRatio = 1.932
+ImageLabel.Parent = Main
+ImageLabel.BackgroundColor3 = Color3.fromRGB(220, 220, 0)
+ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageLabel.BorderSizePixel = 0
+ImageLabel.Size = UDim2.new(1, 0, 1, 0)
+ImageLabel.ZIndex = 3
+ImageLabel.Image = "rbxassetid://88732934189135"
+ImageLabel.ImageColor3 = Color3.fromRGB(0, 0, 0)
+ImageLabel.ScaleType = Enum.ScaleType.Tile
+ImageLabel.TileSize = UDim2.new(0.5, 0, 0.5, 0)
 
-	UIAspectRatioConstraint_4.Parent = Main
-	UIAspectRatioConstraint_4.AspectRatio = 1.932
+UIAspectRatioConstraint_3.Parent = ImageLabel
+UIAspectRatioConstraint_3.AspectRatio = 1.932
 
-	UICorner.CornerRadius = UDim.new(0, 5)
-	UICorner.Parent = Main
+UIAspectRatioConstraint_4.Parent = Main
+UIAspectRatioConstraint_4.AspectRatio = 1.932
 
-	UIStroke_3.Parent = Main
-	UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	UIStroke_3.Thickness = 5.000
+UICorner.CornerRadius = UDim.new(0, 5)
+UICorner.Parent = Main
 
-	PW_Text.Name = "PW_Text"
-	PW_Text.Parent = Notification
-	PW_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	PW_Text.BackgroundTransparency = 1.000
-	PW_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	PW_Text.BorderSizePixel = 0
-	PW_Text.Position = UDim2.new(0.368959993, 0, 0.912341416, 0)
-	PW_Text.Size = UDim2.new(0.261494219, 0, 0.0876585841, 0)
-	PW_Text.ZIndex = 4
-	PW_Text.Font = Enum.Font.FredokaOne
-	PW_Text.Text = "Please Wait :)"
-	PW_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
-	PW_Text.TextScaled = true
-	PW_Text.TextSize = 14.000
-	PW_Text.TextWrapped = true
+UIStroke_3.Parent = Main
+UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke_3.Thickness = 5.000
 
-	UIStroke_4.Parent = PW_Text
-	UIStroke_4.Thickness = 4.000
+task.wait(6.2)
 
-	UIGradient_3.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))}
-	UIGradient_3.Rotation = -90
-	UIGradient_3.Parent = PW_Text
+Main:TweenPosition(UDim2.new(0.5, 0, -1.5, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 2.5, true)
 
-	UIAspectRatioConstraint_5.Parent = PW_Text
-	UIAspectRatioConstraint_5.AspectRatio = 6.586
+task.wait(4.5)
 
-	local TweenService = game:GetService("TweenService")
-
-	local OrgPosMain = Main.Position
-	local OrgPosPW = PW_Text.Position
-
-	Main.Position = UDim2.new(0.5, 0, -1.2, 0)
-	PW_Text.Position = UDim2.new(0.5, 0, 1.2, 0)
-
-	local function EpicName()
-		local thisname = ""
-		local minimumstringsize = math.random(25, 50)
-		local maxstringsize = math.random(250, 500)
-
-		local randomstringmin = 1
-		local randomstringmax = 1000
-
-		local size = math.random(minimumstringsize, maxstringsize)
-
-		for i = 1, size do
-			thisname = thisname..string.char(math.random(randomstringmin, randomstringmax))
-		end
-
-		if thisname then
-			local tobyte = string.byte(thisname)
-			return tobyte
-		else
-			return "Epic Name lol"
-		end
-	end
-
-	for i, v in Notification:GetDescendants() do
-		v.Name = EpicName()
-	end
-
-	Main:TweenPosition(OrgPosMain, Enum.EasingDirection.In, Enum.EasingStyle.Cubic, 3, true)
-	task.wait(3)
-	PW_Text:TweenPosition(OrgPosPW, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 2.5, true)
-
-	task.wait(6)
-
-	Main:TweenPosition(UDim2.new(0.5, 0, -1.2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 3, true)
-	PW_Text:TweenPosition(UDim2.new(0.5, 0, 1.2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 5, true)
-
-	task.wait(7)
-
-	Main:Destroy()
-	PW_Text:Destroy()
-	end)			
+Notification:Destroy()
+				end)
 
 			task.wait(7.5)
 			loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/SlapBattles.lua'))()
