@@ -607,7 +607,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	end
 
 	function GetSlaps()
-		return tostring(plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value)
+		return tonumber(plr:FindFirstChild("leaderstats"):FindFirstChild("Slaps").Value)
 	end
 
 	local Window = OrionLib:MakeWindow({IntroText = "Slap Battles 👏", IntroIcon = "rbxassetid://15315284749",Name = ("Giang Hub - Slap Battles 👏".." | ".. identifyexecutor()),IntroToggleIcon = "rbxassetid://7734091286", HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = "slap battles"})
@@ -6039,7 +6039,7 @@ if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
 	Misc:AddButton({
 		Name = "Equip Glove",
 		Callback = function()
-			if char:FindFirstChild("entered") == nil then
+			if not char:FindFirstChild("entered") then
 				local gloveToEquip
 
 				if getgenv().EquipGlove then
