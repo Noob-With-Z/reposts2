@@ -325,7 +325,7 @@ UIStroke_3.Parent = Main
 UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 UIStroke_3.Thickness = 5.000
 
-task.wait(6.2)
+task.wait(7.4)
 
 Main:TweenPosition(UDim2.new(0.5, 0, -1.5, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 2.5, true)
 
