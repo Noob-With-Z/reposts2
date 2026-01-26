@@ -4259,6 +4259,7 @@ local EmbeddedModules = {
 				window = Lib.Window.new()
 				window:SetTitle("Script Viewer")
 				window:Resize(700, 300)
+				window:SetPosition(0.5,0.5)
 				ScriptViewer.Window = window
 
 				codeFrame = Lib.CodeFrame.new()
@@ -6334,6 +6335,12 @@ local EmbeddedModules = {
 					self.SizeX = sizeX or self.SizeX
 					self.SizeY = sizeY or self.SizeY
 					self.GuiElems.Main.Size = UDim2.new(0,self.SizeX,0,self.SizeY)
+				end
+				
+				funcs.SetPosition = function(self,posX,posY)
+					self.PosX = posX or self.PosX
+					self.PosY = posY or self.PosY
+					self.GuiElems.Main.Position = UDim2.new(0,self.PosX,0,self.PosY)
 				end
 
 				funcs.SetSize = funcs.Resize
