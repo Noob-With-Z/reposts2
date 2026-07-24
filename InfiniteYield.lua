@@ -1,7 +1,7 @@
 -- Infinite Yield FE Admin
 -- View the owner profile here: github.com/EdgeIY
 -- view the official string here: raw.githubusercontent.com/EdgeIY/infiniteyield/master/source
--- Last Script Update: 07/24/2026 at 04:11PM.
+-- Last Script Update: 07/24/2026 at 05:10PM.
 -- Last Version Updated: IY 6.4.2
 
 if IY_LOADED and not _G.IY_DEBUG then
