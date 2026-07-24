@@ -1,7 +1,7 @@
 -- Infinite Yield FE Admin
 -- View the owner profile here: github.com/EdgeIY
 -- view the official string here: raw.githubusercontent.com/EdgeIY/infiniteyield/master/source
--- Last Script Update: 07/24/2026 at 05:10PM.
+-- Last Script Update: 07/24/2026 at 05:15PM.
 -- Last Version Updated: IY 6.4.2
 
 if IY_LOADED and not _G.IY_DEBUG then
@@ -2932,13 +2932,13 @@ currentText1 = Color3.new(1, 1, 1)
 currentText2 = Color3.new(0, 0, 0)
 currentScroll = Color3.fromRGB(78,78,79)
 
-dHideOnExecute = false
+HideOnExecute = false
 
 defaultGuiScale = IsOnMobile and 0.9 or 1
 defaultsettings = {
 	prefix = ';';
 	StayOpen = false;
-	HideOnExecute = dHideOnExecute;
+	HideOnExecute = HideOnExecute;
 	guiScale = defaultGuiScale;
 	espTransparency = 0.3;
 	keepIY = true;
@@ -2962,7 +2962,7 @@ nosaves = false
 useFactorySettings = function()
 	prefix = ';'
 	StayOpen = false
-	HideOnExecute = dHideOnExecute
+	HideOnExecute = HideOnExecute
 	guiScale = defaultGuiScale
 	KeepInfYield = true
 	espTransparency = 0.3
@@ -6500,7 +6500,7 @@ local TeleportCheck = false
 Players.LocalPlayer.OnTeleport:Connect(function(State)
 	if KeepInfYield and (not TeleportCheck) and queueteleport then
 		TeleportCheck = true
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/InfiniteYield.lua'))()")
+		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()")
 	end
 end)
 
@@ -10480,8 +10480,7 @@ end)
 
 addcmd("explorer", {"dex"}, function(args, speaker)
 	notify("Loading", "Hold on a sec")
-	-- This loadstring is now to execute DexPlusPlus instead of the actual Dex Explorer, a modded version of Dex Explorer (this one is so fire)
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/DexExplorerMobile.lua"))()
+	loadstring(game:HttpGet("https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"))()
 end)
 
 addcmd("moondex", {"mdex"}, function(args, speaker)
@@ -13311,9 +13310,9 @@ task.spawn(function()
 end)
 
 if isfile and readfile then
-	if isfile("infiniteyield/IY_FE.iy") then
-		if HttpService:JSONDecode(readfile("infiniteyield/IY_FE.iy")) ~= nil then
-			local Decoded = HttpService:JSONDecode(readfile("infiniteyield/IY_FE.iy"))
+	if isfile("IY_FE.iy") then
+		if HttpService:JSONDecode(readfile("IY_FE.iy")) ~= nil then
+			local Decoded = HttpService:JSONDecode(readfile("IY_FE.iy"))
 			if Decoded.HideOnExecute then
 				task.wait(1)
 				isHidden = Decoded.HideOnExecute
