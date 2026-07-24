@@ -6500,7 +6500,7 @@ local TeleportCheck = false
 Players.LocalPlayer.OnTeleport:Connect(function(State)
 	if KeepInfYield and (not TeleportCheck) and queueteleport then
 		TeleportCheck = true
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()")
+		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/InfiniteYield.lua'))()")
 	end
 end)
 
@@ -10480,7 +10480,8 @@ end)
 
 addcmd("explorer", {"dex"}, function(args, speaker)
 	notify("Loading", "Hold on a sec")
-	loadstring(game:HttpGet("https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"))()
+	-- This loadstring is now to execute DexPlusPlus instead of the actual Dex Explorer, a modded version of Dex Explorer (this one is so fire)
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/DexExplorerMobile.lua"))()
 end)
 
 addcmd("moondex", {"mdex"}, function(args, speaker)
