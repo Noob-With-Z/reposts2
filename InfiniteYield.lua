@@ -1,7 +1,7 @@
 -- Infinite Yield FE Admin
 -- View the owner profile here: github.com/EdgeIY
 -- view the official string here: raw.githubusercontent.com/EdgeIY/infiniteyield/master/source
--- Last Script Update: 07/24/2026 at 05:15PM.
+-- Last Script Update: 07/24/2026 at 05:44PM.
 -- Last Version Updated: IY 6.4.2
 
 if IY_LOADED and not _G.IY_DEBUG then
@@ -2938,7 +2938,7 @@ defaultGuiScale = IsOnMobile and 0.9 or 1
 defaultsettings = {
 	prefix = ';';
 	StayOpen = false;
-	HideOnExecute = HideOnExecute;
+	HideOnExecute = false;
 	guiScale = defaultGuiScale;
 	espTransparency = 0.3;
 	keepIY = true;
@@ -2962,7 +2962,7 @@ nosaves = false
 useFactorySettings = function()
 	prefix = ';'
 	StayOpen = false
-	HideOnExecute = HideOnExecute
+	HideOnExecute = false
 	guiScale = defaultGuiScale
 	KeepInfYield = true
 	espTransparency = 0.3
@@ -3143,7 +3143,7 @@ function updatesaves()
 		local update = {
 			prefix = prefix;
 			StayOpen = StayOpen;
-			HideOnExecute = StayOpen == false and isHidden;
+			HideOnExecute = StayOpen == false and isHidden or false;
 			guiScale = guiScale;
 			keepIY = KeepInfYield;
 			espTransparency = espTransparency;
@@ -7806,9 +7806,9 @@ addcmd('hideiy',{},function(args, speaker)
 	end
 	minimizeNum = 0
 	minimizeHolder()
-	
+
 	updatesaves()
-	
+
 	if not (args[1] and tostring(args[1]) == 'nonotify') then notify('IY Hidden','You can press the prefix key to access the command bar') end
 end)
 
@@ -7822,7 +7822,7 @@ addcmd('showiy',{'unhideiy'},function(args, speaker)
 	else
 		minimizeHolder()
 	end
-	
+
 	updatesaves()
 end)
 
@@ -7859,7 +7859,23 @@ addcmd("savegame", {"saveplace"}, function(args, speaker)
 		saveinstance()
 		notify("Game Saved", "Saved place to the workspace folder within your exploit folder.")
 	else
-		notify("Incompatible Exploit", "Your exploit does not support this command (missing saveinstance)")
+		notify("Incompatible Exploit", "Your exploit does not support saveinstance. Trying another method instead...")
+		
+		local success, err = pcall(function()
+			local synsaveinstance = loadstring(game:HttpGet("https://raw.githubusercontent.com/luau/SynSaveInstance/main/saveinstance.luau", true), "saveinstance")()
+			local Options = {
+				__DEBUG_MODE = true
+			}
+			
+			synsaveinstance(Options)
+		end)
+		
+		if success then
+			notify("Saved", "Saved game to the workspace folder within your exploit folder.")
+		else
+			notify("Failed", 'Failed to save game. More info in the console.\nSearch for "SynSaveInstance" for more info.')
+			warn("[UniversalSynSaveInstance] [Infinite Yield Error Output] : Error while saving game:\n".. err)
+		end
 	end
 end)
 
