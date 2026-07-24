@@ -6500,7 +6500,7 @@ local TeleportCheck = false
 Players.LocalPlayer.OnTeleport:Connect(function(State)
 	if KeepInfYield and (not TeleportCheck) and queueteleport then
 		TeleportCheck = true
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/main/InfiniteYield.lua'))()")
+		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Noob-With-Z/reposts2/main/InfiniteYield.lua'))()")
 	end
 end)
 
@@ -10480,7 +10480,7 @@ end)
 
 addcmd("explorer", {"dex"}, function(args, speaker)
 	notify("Loading", "Hold on a sec")
-	loadstring(game:HttpGet("https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Noob-With-Z/reposts2/refs/heads/main/DexExplorerMobile.lua"))()
 end)
 
 addcmd("moondex", {"mdex"}, function(args, speaker)
